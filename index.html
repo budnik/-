@@ -1,96 +1,214 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Копійчина 2.09</title>
-<style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building a Cheap DIY Keyboard</title>
+    <style>
         body {
-            margin: 0;
+            font-family: sans-serif;
+            line-height: 1.6;
+            margin: 0; /* Remove default body margin */
+            padding: 20px; /* Add padding for content */
+            color: #333;
+            background-color: #f4f4f4;
+            box-sizing: border-box; /* Include padding in body width */
+        }
+    
+        h1, h2 {
+            color: #0056b3;
+            margin-top: 0;
+        }
+    
+        select {
+            margin-bottom: 20px;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            display: block; /* Make select box a block element */
+        }
+    
+        /* Wrapper for the essay and background blocks */
+        .content-wrapper {
+            display: flex;
+            flex-direction: column; /* Stack vertically by default (mobile) */
+            gap: 20px; /* Space between stacked blocks */
+            margin-bottom: 40px; /* Space before comments section */
+        }
+    
+        /* Base styles for language sections (hidden by default) */
+        .language-section {
+            display: none; /* Hide all language sections by default */
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-sizing: border-box; /* Include padding in width/height */
+            width: 100%; /* Full width on mobile */
+            min-height: 80vh; /* Minimum height on mobile */
+            overflow-y: auto; /* Add scroll if content overflows min-height */
+        }
+    
+        /* Style for the active language section (shown) */
+        .language-section.active {
+            display: block; /* Show the active language section */
+            /* Mobile styles applied by base .language-section rule */
+        }
+    
+        /* Style for the empty background block */
+        .background-block {
+            width: 100%; /* Full width on mobile */
+            min-height: 80vh; /* Minimum height on mobile */
+            border-radius: 8px; /* Match language section */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Match language section */
+            /* Background image styling */
             background-image: url('bg.gif');
             background-size: cover;
             background-repeat: no-repeat;
             background-position: center center;
-            min-height: 100vh; /* Ensure it covers the full viewport height */
-            font-family: sans-serif;
-            line-height: 1.6;
-            margin: 20px;
+            box-sizing: border-box; /* Include padding/border in width/height if any added */
         }
-        .language-section {
-            display: none; /* Hide all language sections by default */
+    
+        /* Media Query for widescreen devices */
+        @media (min-width: 768px) { /* Adjust breakpoint as needed, 768px covers most tablets and up */
+            .content-wrapper {
+                flex-direction: row; /* Arrange horizontally on widescreen */
+                gap: 40px; /* Larger space on wide screen */
+                /* Align items to stretch vertically if content height differs */
+                /* align-items: stretch; */ /* Use if sections should have equal height */
+            }
+    
+            .language-section.active {
+                width: 66.66%; /* Approx 2/3 of the content-wrapper width */
+                min-height: auto; /* Remove min-height constraint on widescreen */
+                overflow-y: visible; /* Remove scrollbar constraint on widescreen */
+            }
+    
+            .background-block {
+                width: 33.33%; /* Approx 1/3 of the content-wrapper width */
+                min-height: auto; /* Remove min-height constraint on widescreen */
+            }
         }
-        .language-section.active {
-            display: block; /* Show the active language section */
+    
+    
+        /* Comments Section Styles */
+        .comments-section {
+            margin-top: 40px;
+            border-top: 1px solid #ccc;
+            padding-top: 20px;
         }
-        select {
+        .comments-section h2 {
+             margin-top: 0;
+             color: #0056b3;
+        }
+        .comment {
+            display: flex;
+            align-items: flex-start;
             margin-bottom: 20px;
-            padding: 8px;
+            border: 1px solid #eee;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        .avatar {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            margin-right: 15px;
+        }
+        .avatar svg {
+            display: block;
+        }
+        .comment-content {
+            flex-grow: 1;
+        }
+        .user-name {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            color: #007bff;
+        }
+        .comment-text {
+            margin: 0;
+            color: #555;
         }
     </style>
-</head>
-<body>
-    <label for="language-select">Select Language:</label>
-    <select id="language-select">
-        <option value="en">English</option>
-        <option value="uk">Українська</option>
-        <option value="nl">Nederlands</option>
-        <option value="et">Eesti</option>
-        <option value="fi">Suomi</option>
-        <option value="lv">Latviešu</option>
-        <option value="bg">Български</option>
-        <option value="lt">Lietuvių</option>
-    </select>
+    </head>
+    <body>
+        <label for="language-select">Select Language:</label>
+        <select id="language-select">
+            <option value="en">English</option>
+            <option value="uk">Українська</option>
+            <option value="nl">Nederlands</option>
+            <option value="et">Eesti</option>
+            <option value="fi">Suomi</option>
+            <option value="lv">Latviešu</option>
+            <option value="bg">Български</option>
+            <option value="lt">Lietuvių</option>
+        </select>
+    
+        <div class="content-wrapper">
+            <div class="language-section active" data-lang="en">
+                <h2>Building a Budget Split Keyboard: The Cheapino</h2>
+                <p>Building custom mechanical keyboards can be an expensive hobby, but the open-source Cheapino project offers a refreshing, budget-friendly alternative. Designed with affordability in mind, the Cheapino is notably one of the cheapest split keyboards you can build yourself. It achieves this by using a reversible PCB, a standard RJ45 cable for connection, and a clever Japanese duplex matrix that allows a single microcontroller unit (MCU) to control both halves.</p>
+                <p>While a case is recommended for hotswap switch sockets, soldering switches directly to the PCB is the most economical option. The project provides comprehensive guides for ordering parts, building the keyboard, troubleshooting issues, and customizing the firmware using Vial or QMK, making it accessible even for beginners looking to build a capable and customizable split keyboard without breaking the bank. Licensed under Creative Commons Attribution, the Cheapino truly embodies the spirit of open-source accessibility in the keyboard community.</p>
+            </div>
+    
+            <div class="language-section" data-lang="uk">
+                <h2>Будуємо бюджетну розділену клавіатуру: Cheapino</h2>
+                <p>Створення власних механічних клавіатур може бути дорогим хобі, але проєкт з відкритим вихідним кодом Cheapino пропонує свіжу, бюджетну альтернативу. Розроблений з урахуванням доступності, Cheapino є, мабуть, однією з найдешевших розділених клавіатур, які ви можете зібрати самостійно. Це досягається завдяки використанню реверсивної друкованої плати (PCB), стандартного кабелю RJ45 для підключення та розумної японської дуплексної матриці, яка дозволяє одному мікроконтролеру (MCU) керувати обома половинками.</p>
+                <p>Хоча для гнізд для швидкої заміни перемикачів (hotswap) рекомендується корпус, припаювання перемикачів безпосередньо до плати є найекономічнішим варіантом. Проєкт надає вичерпні посібники для замовлення деталей, збирання клавіатури, вирішення проблем та налаштування прошивки за допомогою Vial або QMK, роблячи його доступним навіть для початківців, які хочуть зібрати функціональну та настроювану розділену клавіатуру, не витрачаючи багато грошей. Ліцензований за ліцензією Creative Commons Attribution, Cheapino справді втілює дух доступності з відкритим вихідним кодом у спільноті клавіатур.</p>
+            </div>
+    
+            <div class="language-section" data-lang="nl">
+                <h2>Een budget gesplitst toetsenbord bouwen: De Cheapino</h2>
+                <p>Het bouwen van aangepaste mechanische toetsenborden kan een dure hobby zijn, maar het open-source Cheapino-project biedt een verfrissend, budgetvriendelijk alternatief. Ontworpen met betaalbaarheid in gedachten, is de Cheapino aantoonbaar een van de goedkoopste gesplitste toetsenborden die je zelf kunt bouwen. Dit wordt bereikt door gebruik te maken van een omkeerbare printplaat (PCB), een standaard RJ45-kabel voor de verbinding en een slimme Japanse duplexmatrix die het mogelijk maakt dat één microcontroller (MCU) beide helften aanstuurt.</p>
+                <p>Hoewel een behuizing wordt aanbevolen voor hotswap-schakelaaraansluitingen, is het rechtstreeks solderen van schakelaars op de PCB de meest economische optie. Het project biedt uitgebreide handleidingen voor het bestellen van onderdelen, het bouwen van het toetsenbord, het oplossen van problemen en het aanpassen van de firmware met Vial of QMK, waardoor het toegankelijk is, zelfs voor beginners die een capabel en aanpasbaar gesplitst toetsenbord willen bouwen zonder veel geld uit te geven. Gelicentieerd onder Creative Commons Attribution, belichaamt de Cheapino echt de geest van open-source toegankelijkheid in de toetsenbordgemeenschap.</p>
+            </div>
+    
+            <div class="language-section" data-lang="et">
+                <h2>Eelarvelise poolitatud klaviatuuri ehitamine: Cheapino</h2>
+                <p>Kohandatud mehaaniliste klaviatuuride ehitamine võib olla kallis hobi, kuid avatud lähtekoodiga Cheapino projekt pakub värskendavat, eelarvesõbralikku alternatiivi. Taskukohasust silmas pidades disainitud Cheapino on märkimisväärselt üks odavamaid poolitatud klaviatuure, mida ise ehitada saab. See saavutatakse pööratava trükkplaadi (PCB), ühenduseks standardse RJ45-kaabli ja nutika Jaapani dupleksmaatriksi abil, mis võimaldab ühel mikrokontrolleril (MCU) juhtida mõlemat poolt.</p>
+                <p>Kuigi hotswap-lülitipistikute jaoks on korpus soovitatav, on lülitite otse trükkplaadile jootmine kõige ökonoomsem variant. Projekt pakub põhjalikke juhendeid osade tellimiseks, klaviatuuri ehitamiseks, probleemide lahendamiseks ja püsivara kohandamiseks Vial või QMK abil, muutes selle ligipääsetavaks isegi algajatele, kes soovivad ehitada võimeka ja kohandatava poolitatud klaviatuuri ilma palju raha kulutamata. Creative Commons Attribution litsentsi alusel litsentseeritud Cheapino kehastab tõeliselt avatud lähtekoodiga juurdepääsetavuse vaimu klaviatuurikogukonnas.</p>
+            </div>
+    
+            <div class="language-section" data-lang="fi">
+                <h2>Budjettiystävällisen jaetun näppäimistön rakentaminen: Cheapino</h2>
+                <p>Mukautettujen mekaanisten näppäimistöjen rakentaminen voi olla kallista harrastus, mutta avoimen lähdekoodin Cheapino-projekti tarjoaa virkistävän, budjettiystävällisen vaihtoehdon. Edullisuutta silmällä pitäen suunniteltu Cheapino on huomattavasti yksi halvimmista jaetuista näppäimistöistä, jotka voit itse rakentaa. Tämä saavutetaan käyttämällä käännettävää piirilevyä (PCB), standardia RJ45-kaapelia liitäntään ja älykästä japanilaista duplex-matriisia, joka mahdollistaa yhden mikrokontrollerin (MCU) ohjaavan molempia puolia.</p>
+                <p>Vaikka koteloa suositellaan hotswap-kytkinliitännöille, kytkimien juottaminen suoraan piirilevylle on taloudellisin vaihtoehto. Projekti tarjoaa kattavat oppaat osien tilaamiseen, näppäimistön rakentamiseen, ongelmien vianmääritykseen ja laiteohjelmiston mukauttamiseen Vialin tai QMK:n avulla, tehden siitä saavutettavan jopa aloittelijoille, jotka haluavat rakentaa pätevän ja mukautettavan jaetun näppäimistön ilman suuria kustannuksia. Creative Commons Attribution -lisenssillä lisensoitu Cheapino todella ilmentää avoimen lähdekoodin saavutettavuuden henkeä näppäimistöyhteisössä.</p>
+            </div>
+    
+            <div class="language-section" data-lang="lv">
+                <h2>Budžeta dalītās tastatūras būvniecība: Cheapino</h2>
+                <p>Pielāgotu mehānisko tastatūru būvniecība var būt dārgs hobijs, taču atvērtā koda projekts Cheapino piedāvā atsvaidzinošu, budžetam draudzīgu alternatīvu. Cheapino, kas izstrādāts, domājot par pieejamību, ir viena no lētākajām dalītajām tastatūrām, ko varat uzbūvēt pats. Tas tiek panākts, izmantojot abpusēju PCB (drukāto shēmas plati), standarta RJ45 kabeli savienojumam un gudru japāņu duplekso matricu, kas ļauj vienam mikrokontrollerim (MCU) kontrolēt abas puses.</p>
+                <p>Lai gan hotswap slēdžu ligzdām ieteicams izmantot korpusu, slēdžu pielodēšana tieši pie PCB ir visekonomiskākā iespēja. Projekts nodrošina visaptverošas rokasgrāmatas detaļu pasūtīšanai, tastatūras būvniecībai, problēmu novēršanai un programmaparatūras pielāgošanai, izmantojot Vial vai QMK, padarot to pieejamu pat iesācējiem, kuri vēlas uzbūvēt spējīgu un pielāgojamu dalītu tastatūru, netērējot daudz naudas. Licencēts saskaņā ar Creative Commons Attribution licenci, Cheapino patiesi iemieso atvērtā koda pieejamības garu tastatūru kopienā.</p>
+            </div>
+    
+            <div class="language-section" data-lang="bg">
+                <h2>Изграждане на бюджетна разделетелна клавиатура: Cheapino</h2>
+                <p>Създаването на персонализирани механични клавиатури може да бъде скъпо хоби, но отвореният проект Cheapino предлага освежаваща, бюджетна алтернатива. Проектиран с мисъл за достъпността, Cheapino е забележително една от най-евтините разделетелни клавиатури, които можете да изградите сами. Това се постига чрез използване на реверсивна печатна платка (PCB), стандартен RJ45 кабел за свързване и интелигентна японска дуплексна матрица, която позволява на един микроконтролер (MCU) да контролира двете половини.</p>
+                <p>Докато се препоръчва кутия за контакти за бърза смяна на превключватели (hotswap), директното запояване на превключвателите към печатната платка е най-икономичният вариант. Проектът предоставя изчерпателни ръководства за поръчка на части, изграждане на клавиатурата, отстраняване на проблеми и персонализиране на фърмуера с помощта на Vial или QMK, което го прави достъпен дори за начинаещи, които искат да изградят способна и персонализирана разделетелна клавиатура, без да харчат много пари. Лицензиран под Creative Commons Attribution лиценз, Cheapino наистина въплъщава духа на отворения достъп в общността на клавиатурите.</p>
+            </div>
+    
+            <div class="language-section" data-lang="lt">
+                <h2>Pigios padalintos klaviatūros kūrimas: Cheapino</h2>
+                <p>Individualizuotų mechaninių klaviatūrų kūrimas gali būti brangus hobis, tačiau atvirojo kodo projektas „Cheapino“ siūlo gaivią, biudžetui draugišką alternatyvą. Sukurtas atsižvelgiant į prieinamumą, „Cheapino“ yra viena pigiausių padalintų klaviatūrų, kurias galite susikurti patys. Tai pasiekiama naudojant reversinę PCB (spausdintinės plokštės), standartinį RJ45 kabelį ryšiui ir išmaniąją japonišką dvipusę matricą, kuri leidžia vienam mikrovaldikliui (MCU) valdyti abi puses.</p>
+                <p>Nors hotswap jungčių lizdams rekomenduojamas korpusas, jungčių litavimas tiesiai prie PCB yra ekonomiškiausias variantas. Projektas teikia išsamius vadovus dalių užsakymui, klaviatūros kūrimui, problemų sprendimui ir programinės aparatinės įrangos pritaikymui naudojant „Vial“ arba QMK, todėl jis prieinamas net pradedantiesiems, norintiems sukurti funkcionalią ir pritaikomą padalintą klaviatūrą neišleidžiant daug pinigų. Pagal „Creative Commons Attribution“ licenciją licencijuotas „Cheapino“ tikrai įkūnija atvirojo kodo prieinamumo dvasią klaviatūrų bendruomenėje.</p>
+            </div>
+            <div class="background-block"></div>
+        </div>
+    
 
-    <div class="language-section active" data-lang="en">
-        <h2>Building a Budget Split Keyboard: The Cheapino</h2>
-        <p>Building custom mechanical keyboards can be an expensive hobby, but the open-source Cheapino project offers a refreshing, budget-friendly alternative. Designed with affordability in mind, the Cheapino is notably one of the cheapest split keyboards you can build yourself. It achieves this by using a reversible PCB, a standard RJ45 cable for connection, and a clever Japanese duplex matrix that allows a single microcontroller unit (MCU) to control both halves.</p>
-        <p>While a case is recommended for hotswap switch sockets, soldering switches directly to the PCB is the most economical option. The project provides comprehensive guides for ordering parts, building the keyboard, troubleshooting issues, and customizing the firmware using Vial or QMK, making it accessible even for beginners looking to build a capable and customizable split keyboard without breaking the bank. Licensed under Creative Commons Attribution, the Cheapino truly embodies the spirit of open-source accessibility in the keyboard community.</p>
-    </div>
-
-    <div class="language-section" data-lang="uk">
-        <h2>Будуємо бюджетну розділену клавіатуру: Cheapino</h2>
-        <p>Створення власних механічних клавіатур може бути дорогим хобі, але проєкт з відкритим вихідним кодом Cheapino пропонує свіжу, бюджетну альтернативу. Розроблений з урахуванням доступності, Cheapino є, мабуть, однією з найдешевших розділених клавіатур, які ви можете зібрати самостійно. Це досягається завдяки використанню реверсивної друкованої плати (PCB), стандартного кабелю RJ45 для підключення та розумної японської дуплексної матриці, яка дозволяє одному мікроконтролеру (MCU) керувати обома половинками.</p>
-        <p>Хоча для гнізд для швидкої заміни перемикачів (hotswap) рекомендується корпус, припаювання перемикачів безпосередньо до плати є найекономічнішим варіантом. Проєкт надає вичерпні посібники для замовлення деталей, збирання клавіатури, вирішення проблем та налаштування прошивки за допомогою Vial або QMK, роблячи його доступним навіть для початківців, які хочуть зібрати функціональну та настроювану розділену клавіатуру, не витрачаючи багато грошей. Ліцензований за ліцензією Creative Commons Attribution, Cheapino справді втілює дух доступності з відкритим вихідним кодом у спільноті клавіатур.</p>
-    </div>
-
-    <div class="language-section" data-lang="nl">
-        <h2>Een budget gesplitst toetsenbord bouwen: De Cheapino</h2>
-        <p>Het bouwen van aangepaste mechanische toetsenborden kan een dure hobby zijn, maar het open-source Cheapino-project biedt een verfrissend, budgetvriendelijk alternatief. Ontworpen met betaalbaarheid in gedachten, is de Cheapino aantoonbaar een van de goedkoopste gesplitste toetsenborden die je zelf kunt bouwen. Dit wordt bereikt door gebruik te maken van een omkeerbare printplaat (PCB), een standaard RJ45-kabel voor de verbinding en een slimme Japanse duplexmatrix die het mogelijk maakt dat één microcontroller (MCU) beide helften aanstuurt.</p>
-        <p>Hoewel een behuizing wordt aanbevolen voor hotswap-schakelaaraansluitingen, is het rechtstreeks solderen van schakelaars op de PCB de meest economische optie. Het project biedt uitgebreide handleidingen voor het bestellen van onderdelen, het bouwen van het toetsenbord, het oplossen van problemen en het aanpassen van de firmware met Vial of QMK, waardoor het toegankelijk is, zelfs voor beginners die een capabel en aanpasbaar gesplitst toetsenbord willen bouwen zonder veel geld uit te geven. Gelicentieerd onder Creative Commons Attribution, belichaamt de Cheapino echt de geest van open-source toegankelijkheid in de toetsenbordgemeenschap.</p>
-    </div>
-
-    <div class="language-section" data-lang="et">
-        <h2>Eelarvelise poolitatud klaviatuuri ehitamine: Cheapino</h2>
-        <p>Kohandatud mehaaniliste klaviatuuride ehitamine võib olla kallis hobi, kuid avatud lähtekoodiga Cheapino projekt pakub värskendavat, eelarvesõbralikku alternatiivi. Taskukohasust silmas pidades disainitud Cheapino on märkimisväärselt üks odavamaid poolitatud klaviatuure, mida ise ehitada saab. See saavutatakse pööratava trükkplaadi (PCB), ühenduseks standardse RJ45-kaabli ja nutika Jaapani dupleksmaatriksi abil, mis võimaldab ühel mikrokontrolleril (MCU) juhtida mõlemat poolt.</p>
-        <p>Kuigi hotswap-lülitipistikute jaoks on korpus soovitatav, on lülitite otse trükkplaadile jootmine kõige ökonoomsem variant. Projekt pakub põhjalikke juhendeid osade tellimiseks, klaviatuuri ehitamiseks, probleemide lahendamiseks ja püsivara kohandamiseks Vial või QMK abil, muutes selle ligipääsetavaks isegi algajatele, kes soovivad ehitada võimeka ja kohandatava poolitatud klaviatuuri ilma palju raha kulutamata. Creative Commons Attribution litsentsi alusel litsentseeritud Cheapino kehastab tõeliselt avatud lähtekoodiga juurdepääsetavuse vaimu klaviatuurikogukonnas.</p>
-    </div>
-
-    <div class="language-section" data-lang="fi">
-        <h2>Budjettiystävällisen jaetun näppäimistön rakentaminen: Cheapino</h2>
-        <p>Mukautettujen mekaanisten näppäimistöjen rakentaminen voi olla kallista harrastus, mutta avoimen lähdekoodin Cheapino-projekti tarjoaa virkistävän, budjettiystävällisen vaihtoehdon. Edullisuutta silmällä pitäen suunniteltu Cheapino on huomattavasti yksi halvimmista jaetuista näppäimistöistä, jotka voit itse rakentaa. Tämä saavutetaan käyttämällä käännettävää piirilevyä (PCB), standardia RJ45-kaapelia liitäntään ja älykästä japanilaista duplex-matriisia, joka mahdollistaa yhden mikrokontrollerin (MCU) ohjaavan molempia puolia.</p>
-        <p>Vaikka koteloa suositellaan hotswap-kytkinliitännöille, kytkimien juottaminen suoraan piirilevylle on taloudellisin vaihtoehto. Projekti tarjoaa kattavat oppaat osien tilaamiseen, näppäimistön rakentamiseen, ongelmien vianmääritykseen ja laiteohjelmiston mukauttamiseen Vialin tai QMK:n avulla, tehden siitä saavutettavan jopa aloittelijoille, jotka haluavat rakentaa pätevän ja mukautettavan jaetun näppäimistön ilman suuria kustannuksia. Creative Commons Attribution -lisenssillä lisensoitu Cheapino todella ilmentää avoimen lähdekoodin saavutettavuuden henkeä näppäimistöyhteisössä.</p>
-    </div>
-
-    <div class="language-section" data-lang="lv">
-        <h2>Budžeta dalītās tastatūras būvniecība: Cheapino</h2>
-        <p>Pielāgotu mehānisko tastatūru būvniecība var būt dārgs hobijs, taču atvērtā koda projekts Cheapino piedāvā atsvaidzinošu, budžetam draudzīgu alternatīvu. Cheapino, kas izstrādāts, domājot par pieejamību, ir viena no lētākajām dalītajām tastatūrām, ko varat uzbūvēt pats. Tas tiek panākts, izmantojot abpusēju PCB (drukāto shēmas plati), standarta RJ45 kabeli savienojumam un gudru japāņu duplekso matricu, kas ļauj vienam mikrokontrollerim (MCU) kontrolēt abas puses.</p>
-        <p>Lai gan hotswap slēdžu ligzdām ieteicams izmantot korpusu, slēdžu pielodēšana tieši pie PCB ir visekonomiskākā iespēja. Projekts nodrošina visaptverošas rokasgrāmatas detaļu pasūtīšanai, tastatūras būvniecībai, problēmu novēršanai un programmaparatūras pielāgošanai, izmantojot Vial vai QMK, padarot to pieejamu pat iesācējiem, kuri vēlas uzbūvēt spējīgu un pielāgojamu dalītu tastatūru, netērējot daudz naudas. Licencēts saskaņā ar Creative Commons Attribution licenci, Cheapino patiesi iemieso atvērtā koda pieejamības garu tastatūru kopienā.</p>
-    </div>
-
-    <div class="language-section" data-lang="bg">
-        <h2>Изграждане на бюджетна разделетелна клавиатура: Cheapino</h2>
-        <p>Създаването на персонализирани механични клавиатури може да бъде скъпо хоби, но отвореният проект Cheapino предлага освежаваща, бюджетна алтернатива. Проектиран с мисъл за достъпността, Cheapino е забележително една от най-евтините разделетелни клавиатури, които можете да изградите сами. Това се постига чрез използване на реверсивна печатна платка (PCB), стандартен RJ45 кабел за свързване и интелигентна японска дуплексна матрица, която позволява на един микроконтролер (MCU) да контролира двете половини.</p>
-        <p>Докато се препоръчва кутия за контакти за бърза смяна на превключватели (hotswap), директното запояване на превключвателите към печатната платка е най-икономичният вариант. Проектът предоставя изчерпателни ръководства за поръчка на части, изграждане на клавиатурата, отстраняване на проблеми и персонализиране на фърмуера с помощта на Vial или QMK, което го прави достъпен дори за начинаещи, които искат да изградят способна и персонализирана разделетелна клавиатура, без да харчат много пари. Лицензиран под Creative Commons Attribution лиценз, Cheapino наистина въплъщава духа на отворения достъп в общността на клавиатурите.</p>
-    </div>
-
-    <div class="language-section" data-lang="lt">
-        <h2>Pigios padalintos klaviatūros kūrimas: Cheapino</h2>
-        <p>Individualizuotų mechaninių klaviatūrų kūrimas gali būti brangus hobis, tačiau atvirojo kodo projektas „Cheapino“ siūlo gaivią, biudžetui draugišką alternatyvą. Sukurtas atsižvelgiant į prieinamumą, „Cheapino“ yra viena pigiausių padalintų klaviatūrų, kurias galite susikurti patys. Tai pasiekiama naudojant reversinę PCB (spausdintinės plokštės), standartinį RJ45 kabelį ryšiui ir išmaniąją japonišką dvipusę matricą, kuri leidžia vienam mikrovaldikliui (MCU) valdyti abi puses.</p>
-        <p>Nors hotswap jungčių lizdams rekomenduojamas korpusas, jungčių litavimas tiesiai prie PCB yra ekonomiškiausias variantas. Projektas teikia išsamius vadovus dalių užsakymui, klaviatūros kūrimui, problemų sprendimui ir programinės aparatinės įrangos pritaikymui naudojant „Vial“ arba QMK, todėl jis prieinamas net pradedantiesiems, norintiems sukurti funkcionalią ir pritaikomą padalintą klaviatūrą neišleidžiant daug pinigų. Pagal „Creative Commons Attribution“ licenciją licencijuotas „Cheapino“ tikrai įkūnija atvirojo kodo prieinamumo dvasią klaviatūrų bendruomenėje.</p>
-    </div>
+    <div class="comments-section">
+        <h2>Comments</h2>
+        </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const selectElement = document.getElementById('language-select');
             const languageSections = document.querySelectorAll('.language-section');
+            const commentsSection = document.querySelector('.comments-section');
 
             // Function to set the document's lang attribute
             function setDocumentLang(lang) {
@@ -100,12 +218,12 @@
             selectElement.addEventListener('change', function() {
                 const selectedLang = this.value;
 
-                // Hide all sections
+                // Hide all essay sections
                 languageSections.forEach(section => {
                     section.classList.remove('active');
                 });
 
-                // Show the selected section and set document lang
+                // Show the selected essay section and set document lang
                 const activeSection = document.querySelector(`.language-section[data-lang="${selectedLang}"]`);
                 if (activeSection) {
                     activeSection.classList.add('active');
@@ -115,6 +233,184 @@
 
             // Set initial language on page load
             setDocumentLang(selectElement.value);
+
+            // Array of SVG Avatar Designs (Papers, Please style)
+            const avatarSVGs = [
+                `<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#a0c0e0"/><circle cx="15" cy="18" r="3" fill="#333"/><circle cx="25" cy="18" r="3" fill="#333"/><path d="M 15 25 Q 20 30 25 25" stroke="#333" fill="none" stroke-width="2"/></svg>`, // Simple blue head with smile
+                `<svg width="40" height="40" viewBox="0 0 40 40"><rect x="5" y="10" width="30" height="25" rx="12.5" fill="#c0a080"/><rect x="10" y="5" width="20" height="10" rx="5" fill="#806040"/><circle cx="15" cy="20" r="2" fill="#333"/><circle cx="25" cy="20" r="2" fill="#333"/></svg>`, // Rounded brown head with rounded hair
+                `<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#b0e0b0"/><rect x="10" y="5" width="20" height="10" fill="#804040"/><circle cx="15" cy="22" r="2" fill="#333"/><circle cx="25" cy="22" r="2" fill="#333"/></svg>`, // Green head with red block hat
+                `<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#f0d0b0"/><rect x="12" y="16" width="16" height="8" rx="2" fill="none" stroke="#333" stroke-width="2"/><circle cx="15" cy="20" r="2" fill="#333"/><circle cx="25" cy="20" r="2" fill="#333"/></svg>`, // Head with rectangular glasses
+                `<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#e0c0a0"/><rect x="10" y="30" width="20" height="5" rx="2" fill="#604020"/><circle cx="15" cy="18" r="3" fill="#333"/><circle cx="25" cy="18" r="3" fill="#333"/></svg>`, // Head with simple beard
+                `<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#a0d0f0"/><path d="M 10 15 Q 20 5 30 15" stroke="#402000" fill="none" stroke-width="4" stroke-linecap="round"/><circle cx="15" cy="22" r="2" fill="#333"/><circle cx="25" cy="22" r="2" fill="#333"/></svg>`, // Head with spiky hair
+                `<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#d0a0c0"/><rect x="12" y="10" width="16" height="5" fill="#503040"/><circle cx="15" cy="20" r="2" fill="#333"/><circle cx="25" cy="20" r="2" fill="#333"/></svg>`, // Head with simple headband
+                `<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#c0e0d0"/><rect x="10" y="5" width="20" height="10" rx="5" fill="#202020"/><circle cx="15" cy="20" r="2" fill="#fff"/><circle cx="25" cy="20" r="2" fill="#fff"/></svg>`, // Greenish head with black beanie
+                `<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#f0e0a0"/><rect x="10" y="15" width="20" height="10" fill="none" stroke="#502000" stroke-width="2" rx="5"/><circle cx="15" cy="20" r="2" fill="#333"/><circle cx="25" cy="20" r="2" fill="#333"/></svg>`, // Yellowish head with large oval glasses
+                 `<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#a0b0c0"/><path d="M 10 15 C 10 5 30 5 30 15 Z" fill="#401010"/><circle cx="15" cy="22" r="2" fill="#333"/><circle cx="25" cy="22" r="2" fill="#333"/></svg>`, // Grey head with simple pointy hat
+                `<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#e0b0d0"/><path d="M 10 15 C 10 5 30 5 30 15" fill="#603040"/><circle cx="15" cy="22" r="2" fill="#333"/><circle cx="25" cy="22" r="2" fill="#333"/><circle cx="20" cy="30" r="3" fill="#502030"/></svg>`, // Pinkish head with hat and dot mouth
+                `<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#c0c0a0"/><rect x="12" y="12" width="16" height="4" fill="#333"/><circle cx="15" cy="20" r="2" fill="#fff"/><circle cx="25" cy="20" r="2" fill="#fff"/><path d="M 15 28 Q 20 32 25 28" stroke="#333" fill="none" stroke-width="2"/></svg>`, // Head with straight hair and smile
+                 `<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#b0a0e0"/><rect x="10" y="5" width="20" height="10" rx="5" fill="#204060"/><circle cx="15" cy="20" r="2" fill="#fff"/><circle cx="25" cy="20" r="2" fill="#fff"/><path d="M 15 28 L 25 28" stroke="#333" fill="none" stroke-width="2"/></svg>`, // Purple head with blue beanie and straight mouth
+                 `<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#e0a0a0"/><circle cx="15" cy="18" r="3" fill="#333"/><circle cx="25" cy="18" r="3" fill="#333"/><path d="M 15 25 C 18 28 22 28 25 25" stroke="#333" fill="none" stroke-width="2"/></svg>`, // Reddish head, slight curve smile
+                `<svg width="40" height="40" viewBox="0 0 40 40"><rect x="5" y="10" width="30" height="25" rx="12.5" fill="#a08060"/><rect x="10" y="5" width="20" height="10" fill="#402010"/><circle cx="15" cy="20" r="2" fill="#333"/><circle cx="25" cy="20" r="2" fill="#333"/></svg>`, // Rounded darker brown head with block hair
+                `<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#c0b0a0"/><rect x="12" y="16" width="16" height="8" rx="2" fill="none" stroke="#502000" stroke-width="2"/><circle cx="15" cy="20" r="2" fill="#333"/><circle cx="25" cy="20" r="2" fill="#333"/><path d="M 15 30 Q 20 28 25 30" stroke="#333" fill="none" stroke-width="2"/></svg>`, // Head with glasses, slight frown
+                 `<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#b0c0a0"/><rect x="10" y="30" width="20" height="5" rx="2" fill="#405030"/><circle cx="15" cy="18" r="3" fill="#333"/><circle cx="25" cy="18" r="3" fill="#333"/></svg>`, // Head with darker beard
+                 `<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#d0e0f0"/><path d="M 10 15 Q 20 5 30 15" stroke="#201040" fill="none" stroke-width="4" stroke-linecap="round"/><circle cx="15" cy="22" r="2" fill="#333"/><circle cx="25" cy="22" r="2" fill="#333"/></svg>`, // Lighter blue head with darker spiky hair
+                 `<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#e0c0e0"/><rect x="12" y="10" width="16" height="5" fill="#302030"/><circle cx="15" cy="20" r="2" fill="#333"/><circle cx="25" cy="20" r="2" fill="#333"/></svg>`, // Pink head with darker headband
+            ]; // Total 18 distinct SVG designs
+
+            // Popular names for each language
+            const names = {
+                en: ["John", "Mary", "Michael", "Sarah", "James", "Emily", "David", "Jessica", "Robert", "Ashley", "William", "Elizabeth", "Richard", "Jennifer", "Charles", "Linda", "Thomas", "Patricia", "Christopher", "Susan"],
+                uk: ["Олександр", "Ольга", "Сергій", "Наталія", "Іван", "Анна", "Василь", "Олена", "Андрій", "Тетяна", "Микола", "Галина", "Володимир", "Людмила", "Дмитро", "Катерина", "Петро", "Марія", "Павло", "Надія"],
+                nl: ["Jan", "Maria", "Cornelis", "Johanna", "Johannes", "Anna", "Petrus", "Elisabeth", "Hendrik", "Margaretha", "Jacobus", "Catharina", "Willem", "Petronella", "Gerardus", "Christina", "Dirk", "Elisabeth", "Maarten", "Maria"],
+                et: ["Rein", "Anne", "Toomas", "Katrin", "Mart", "Mare", "Andres", "Sirje", "Peeter", "Tiina", "Jüri", "Reet", "Mati", "Ene", "Priit", "Mall", "Meelis", "Kristiina", "Indrek", "Laura"],
+                fi: ["Juha", "Marjatta", "Matti", "Pirkko", "Kari", "Anneli", "Mika", "Hannele", "Timo", "Leena", "Veli", "Ritva", "Pekka", "Helena", "Antti", "Sirkka", "Jari", "Eeva", "Markku", "Sari"],
+                lv: ["Jānis", "Anna", "Edgars", "Kristīne", "Valdis", "Ilze", "Andris", "Inga", "Juris", "Dace", "Pēteris", "Līga", "Māris", "Sarmīte", "Aigars", "Iveta", "Dainis", "Zane", "Artūrs", "Anita"],
+                bg: ["Георги", "Иванка", "Иван", "Мария", "Димитър", "Петя", "Николай", "Елена", "Васил", "Йорданка", "Петър", "Надежда", "Александър", "Десислава", "Тодор", "Маргарита", "Стефан", "Даниела", "Христо", "Виолета"],
+                lt: ["Jonas", "Irena", "Antanas", "Janina", "Petras", "Ona", "Juozas", "Danutė", "Vytautas", "Aldona", "Kazys", "Zofija", "Bronius", "Marija", "Vladislovas", "Regina", "Algirdas", "Rasa", "Mindaugas", "Laima"]
+            };
+
+            // Comment templates for each language
+            const commentsTemplates = {
+                en: [
+                    "This project is amazing for beginners!", "So happy I could build a split board without spending a fortune.",
+                    "The guides are incredibly clear, thank you!", "Vial support out of the box is fantastic.",
+                    "My hands feel so much better with a split layout.", "Highly recommend the Cheapino!",
+                    "Building it was a fun weekend project.", "The open-source nature is the best part.",
+                    "Great community around this board.", "Already planning my next Cheapino build!",
+                    "Perfect entry into custom keyboards.", "Surprised how well it performs for the price.",
+                    "Soldering was easier than I thought.", "Love the compact design.",
+                    "Finally, an ergonomic option that isn't expensive.", "Looks great and feels even better to type on.",
+                    "A truly accessible keyboard project.", "My wrists thank you!", "Incredible value for money.",
+                    "Learned so much while building it."
+                ],
+                uk: [
+                    "Цей проєкт чудовий для початківців!", "Дуже щасливий, що зміг зібрати розділену плату, не витрачаючи багато грошей.",
+                    "Посібники надзвичайно зрозумілі, дякую!", "Підтримка Vial з коробки – це фантастика.",
+                    "Мої руки почуваються набагато краще з розділеним макетом.", "Дуже рекомендую Cheapino!",
+                    "Збирання було веселим проєктом на вихідні.", "Відкритий вихідний код – це найкраща частина.",
+                    "Чудова спільнота навколо цієї плати.", "Вже планую свою наступну збірку Cheapino!",
+                    "Ідеальний вхід у світ кастомних клавіатур.", "Здивований, наскільки добре вона працює за таку ціну.",
+                    "Припаювання було легше, ніж я думав.", "Подобається компактний дизайн.",
+                    "Нарешті, ергономічний варіант, який не є дорогим.", "Виглядає чудово і набирати текст ще приємніше.",
+                    "Справді доступний проєкт клавіатури.", "Мої зап'ястя дякують вам!", "Неймовірне співвідношення ціни та якості.",
+                    "Так багато навчився під час збирання."
+                ],
+                nl: [
+                    "Dit project is geweldig voor beginners!", "Zo blij dat ik een gesplitst toetsenbord kon bouwen zonder een fortuin uit te geven.",
+                    "De handleidingen zijn ongelooflijk duidelijk, bedankt!", "Vial-ondersteuning out-of-the-box is fantastisch.",
+                    "Mijn handen voelen veel beter aan met een gesplitste lay-out.", "Beveel de Cheapino ten zeerste aan!",
+                    "Het bouwen ervan was een leuk weekendproject.", "Het open-source karakter is het beste deel.",
+                    "Geweldige gemeenschap rond dit toetsenbord.", "Ben al mijn volgende Cheapino-bouw aan het plannen!",
+                    "Perfecte instap in aangepaste toetsenborden.", "Verbaasd hoe goed het presteert voor de prijs.",
+                    "Solderen was makkelijker dan ik dacht.", "Houd van het compacte ontwerp.",
+                    "Eindelijk een ergonomische optie die niet duur is.", "Ziet er geweldig uit en voelt nog beter aan om op te typen.",
+                    "Een echt toegankelijk toetsenbordproject.", "Mijn polsen danken je!", "Ongelooflijke waarde voor je geld.",
+                    "Zoveel geleerd tijdens het bouwen."
+                ],
+                 et: [
+                    "See projekt on algajatele imeline!", "Nii õnnelik, et sain ehitada poolitatud plaadi ilma varandust kulutamata.",
+                    "Juhendid on uskumatult selged, aitäh!", "Vial tugi karbist välja võttes on fantastiline.",
+                    "Mu käed tunnevad end poolitatud paigutusega palju paremini.", "Soovitan Cheapinot soojalt!",
+                    "Selle ehitamine oli lõbus nädalavahetuse projekt.", "Avatud lähtekood on parim osa.",
+                    "Suurepärane kogukond selle plaadi ümber.", "Juba planeerin oma järgmist Cheapino ehitust!",
+                    "Ideaalne sisenemine kohandatud klaviatuuride maailma.", "Üllatunud, kui hästi see hinna eest töötab.",
+                    "Jootmine oli lihtsam, kui ma arvasin.", "Armastan kompaktset disaini.",
+                    "Lõpuks ometi ergonoomiline valik, mis ei ole kallis.", "Näeb välja suurepärane ja trükkida on veel parem tunne.",
+                    "Tõeliselt ligipääsetav klaviatuuriprojekt.", "Mu randmed tänavad teid!", "Uskumatu hinna ja kvaliteedi suhe.",
+                    "Õppisin selle ehitamise ajal nii palju."
+                ],
+                 fi: [
+                    "Tämä projekti on mahtava aloittelijoille!", "Niin iloinen, että sain rakennettua jaetun näppäimistön kuluttamatta omaisuutta.",
+                    "Oppaat ovat uskomattoman selkeät, kiitos!", "Vial-tuki suoraan paketista on fantastinen.",
+                    "Käteni tuntuvat paljon paremmalta jaetulla asettelulla.", "Suosittelen Cheapinoa lämpimästi!",
+                    "Sen rakentaminen oli hauska viikonloppuprojekti.", "Avoimen lähdekoodin luonne on paras osa.",
+                    "Loistava yhteisö tämän näppäimistön ympärillä.", "Suunnittelen jo seuraavaa Cheapino-rakennustani!",
+                    "Täydellinen sisäänpääsy mukautettujen näppäimistöjen maailmaan.", "Yllättynyt, kuinka hyvin se toimii hintaansa nähden.",
+                    "Juottaminen oli helpompaa kuin luulin.", "Pidän kompaktista muotoilusta.",
+                    "Viimeinkin ergonominen vaihtoehto, joka ei ole kallis.", "Näyttää upealta ja tuntuu vieläkin paremmalta kirjoittaa.",
+                    "Todella saavutettava näppäimistöprojekti.", "Ranteeni kiittävät sinua!", "Uskomaton vastine rahalle.",
+                    "Opin niin paljon sitä rakentaessani."
+                ],
+                 lv: [
+                    "Šis projekts ir pārsteidzošs iesācējiem!", "Tik priecīgs, ka varēju uzbūvēt dalītu tastatūru, netērējot bagātību.",
+                    "Rokasgrāmatas ir neticami skaidras, paldies!", "Vial atbalsts no kastes ir fantastisks.",
+                    "Manas rokas jūtas daudz labāk ar dalītu izkārtojumu.", "Ļoti iesaku Cheapino!",
+                    "Tās būvēšana bija jautrs nedēļas nogales projekts.", "Atvērtā koda daba ir labākā daļa.",
+                    "Lieliska kopiena ap šo tastatūru.", "Jau plānoju savu nākamo Cheapino būvniecību!",
+                    "Perfekta ieejas iespēja pielāgoto tastatūru pasaulē.", "Pārsteigts, cik labi tā darbojas par šādu cenu.",
+                    "Lodēšana bija vieglāka, nekā domāju.", "Patīk kompaktais dizains.",
+                    "Beidzot ergonomiska iespēja, kas nav dārga.", "Izskatās lieliski un rakstīt jūtas vēl labāk.",
+                    "Patiesi pieejams tastatūras projekts.", "Mani plaukstas pateicas jums!", "Neticama vērtība par naudu.",
+                    "Tik daudz iemācījos to būvējot."
+                ],
+                 bg: [
+                    "Този проект е страхотен за начинаещи!", "Толкова се радвам, че успях да изградя разделелена платка, без да харча цяло състояние.",
+                    "Ръководствата са невероятно ясни, благодаря!", "Поддръжката на Vial от кутията е фантастична.",
+                    "Ръцете ми се чувстват много по-добре с разделената подредба.", "Силно препоръчвам Cheapino!",
+                    "Изграждането му беше забавен уикенд проект.", "Отвореният код е най-добрата част.",
+                    "Страхотна общност около тази платка.", "Вече планирам следващата си Cheapino сборка!",
+                    "Перфектен вход в света на персонализираните клавиатури.", "Изненадан съм колко добре работи за цената си.",
+                    "Запояването беше по-лесно, отколкото си мислех.", "Харесва ми компактният дизайн.",
+                    "Най-накрая, ергономична опция, която не е скъпа.", "Изглежда страхотно и се чувства още по-добре за писане.",
+                    "Наистина достъпен проект за клавиатура.", "Китката ми ви благодари!", "Невероятна стойност за парите.",
+                    "Научих толкова много, докато го изграждах."
+                ],
+                 lt: [
+                    "Šis projektas yra nuostabus pradedantiesiems!", "Taip džiaugiuosi, kad galėjau sukurti padalintą plokštę neišleisdamas daug pinigų.",
+                    "Vadovai yra neįtikėtinai aiškūs, ačiū!", "Vial palaikymas iškart yra fantastiškas.",
+                    "Mano rankos jaučiasi daug geriau su padalintu išdėstymu.", "Labai rekomenduoju „Cheapino“!",
+                    "Jo kūrimas buvo smagus savaitgalio projektas.", "Atvirojo kodo pobūdis yra geriausia dalis.",
+                    "Puiki bendruomenė aplink šią plokštę.", "Jau planuoju kitą „Cheapino“ kūrinį!",
+                    "Puikus įėjimas į individualių klaviatūrų pasaulį.", "Nustebęs, kaip gerai jis veikia už tokią kainą.",
+                    "Litavimas buvo lengvesnis, nei maniau.", "Patinka kompaktiškas dizainas.",
+                    "Pagaliau, ergonomiškas variantas, kuris nėra brangus.", "Atrodo puikiai ir rašyti jaučiasi dar geriau.",
+                    "Tikrai prieinamas klaviatūros projektas.", "Mano riešai jums dėkingi!", "Neįtikėtina vertė už pinigus.",
+                    "Tiek daug sužinojau jį kurdamas."
+                ]
+            };
+
+            function getRandomElement(arr) {
+                return arr[Math.floor(Math.random() * arr.length)];
+            }
+
+            function fetchCommentHtml(lang, avatarHtml, userName, commentText) {
+                 return `
+                    <div class="comment">
+                        <div class="avatar">${avatarHtml}</div>
+                        <div class="comment-content">
+                            <span class="user-name">${userName}</span>
+                            <p class="comment-text">${commentText}</p>
+                        </div>
+                    </div>
+                 `;
+            }
+
+            // Generate 120 comments (more than 100)
+            const numberOfComments = 120;
+            const langs = Object.keys(names);
+            const commentsData = [];
+
+            for (let i = 0; i < numberOfComments; i++) {
+                const lang = langs[i % langs.length]; // Cycle through languages
+                const name = getRandomElement(names[lang]);
+                const text = getRandomElement(commentsTemplates[lang]);
+                const avatar = avatarSVGs[i % avatarSVGs.length]; // Cycle through avatars for variety
+
+                commentsData.push({ lang, name, avatar, text });
+            }
+
+             // Shuffle the comments data to mix languages and avatars
+            commentsData.sort(() => Math.random() - 0.5);
+
+
+            // Generate and insert comment HTML
+            let allCommentsHtml = '';
+            commentsData.forEach(comment => {
+                allCommentsHtml += fetchCommentHtml(comment.lang, comment.avatar, comment.name, comment.text);
+            });
+
+            commentsSection.innerHTML += allCommentsHtml; // Add generated comments below the header
+
         });
     </script>
 
