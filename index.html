@@ -3,16 +3,120 @@
 <head>
 <title>Копійчина 2.09</title>
 <style>
-body {
-    margin: 0;
-    background-image: url('/bg.gif');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center center;
-    min-height: 100vh; /* Ensure it covers the full viewport height */
-}
-</style>
+        body {
+            margin: 0;
+            background-image: url('bg.gif');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;
+            min-height: 100vh; /* Ensure it covers the full viewport height */
+            font-family: sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+        .language-section {
+            display: none; /* Hide all language sections by default */
+        }
+        .language-section.active {
+            display: block; /* Show the active language section */
+        }
+        select {
+            margin-bottom: 20px;
+            padding: 8px;
+        }
+    </style>
 </head>
 <body>
+    <label for="language-select">Select Language:</label>
+    <select id="language-select">
+        <option value="en">English</option>
+        <option value="uk">Українська</option>
+        <option value="nl">Nederlands</option>
+        <option value="et">Eesti</option>
+        <option value="fi">Suomi</option>
+        <option value="lv">Latviešu</option>
+        <option value="bg">Български</option>
+        <option value="lt">Lietuvių</option>
+    </select>
+
+    <div class="language-section active" data-lang="en">
+        <h2>Building a Budget Split Keyboard: The Cheapino</h2>
+        <p>Building custom mechanical keyboards can be an expensive hobby, but the open-source Cheapino project offers a refreshing, budget-friendly alternative. Designed with affordability in mind, the Cheapino is notably one of the cheapest split keyboards you can build yourself. It achieves this by using a reversible PCB, a standard RJ45 cable for connection, and a clever Japanese duplex matrix that allows a single microcontroller unit (MCU) to control both halves.</p>
+        <p>While a case is recommended for hotswap switch sockets, soldering switches directly to the PCB is the most economical option. The project provides comprehensive guides for ordering parts, building the keyboard, troubleshooting issues, and customizing the firmware using Vial or QMK, making it accessible even for beginners looking to build a capable and customizable split keyboard without breaking the bank. Licensed under Creative Commons Attribution, the Cheapino truly embodies the spirit of open-source accessibility in the keyboard community.</p>
+    </div>
+
+    <div class="language-section" data-lang="uk">
+        <h2>Будуємо бюджетну розділену клавіатуру: Cheapino</h2>
+        <p>Створення власних механічних клавіатур може бути дорогим хобі, але проєкт з відкритим вихідним кодом Cheapino пропонує свіжу, бюджетну альтернативу. Розроблений з урахуванням доступності, Cheapino є, мабуть, однією з найдешевших розділених клавіатур, які ви можете зібрати самостійно. Це досягається завдяки використанню реверсивної друкованої плати (PCB), стандартного кабелю RJ45 для підключення та розумної японської дуплексної матриці, яка дозволяє одному мікроконтролеру (MCU) керувати обома половинками.</p>
+        <p>Хоча для гнізд для швидкої заміни перемикачів (hotswap) рекомендується корпус, припаювання перемикачів безпосередньо до плати є найекономічнішим варіантом. Проєкт надає вичерпні посібники для замовлення деталей, збирання клавіатури, вирішення проблем та налаштування прошивки за допомогою Vial або QMK, роблячи його доступним навіть для початківців, які хочуть зібрати функціональну та настроювану розділену клавіатуру, не витрачаючи багато грошей. Ліцензований за ліцензією Creative Commons Attribution, Cheapino справді втілює дух доступності з відкритим вихідним кодом у спільноті клавіатур.</p>
+    </div>
+
+    <div class="language-section" data-lang="nl">
+        <h2>Een budget gesplitst toetsenbord bouwen: De Cheapino</h2>
+        <p>Het bouwen van aangepaste mechanische toetsenborden kan een dure hobby zijn, maar het open-source Cheapino-project biedt een verfrissend, budgetvriendelijk alternatief. Ontworpen met betaalbaarheid in gedachten, is de Cheapino aantoonbaar een van de goedkoopste gesplitste toetsenborden die je zelf kunt bouwen. Dit wordt bereikt door gebruik te maken van een omkeerbare printplaat (PCB), een standaard RJ45-kabel voor de verbinding en een slimme Japanse duplexmatrix die het mogelijk maakt dat één microcontroller (MCU) beide helften aanstuurt.</p>
+        <p>Hoewel een behuizing wordt aanbevolen voor hotswap-schakelaaraansluitingen, is het rechtstreeks solderen van schakelaars op de PCB de meest economische optie. Het project biedt uitgebreide handleidingen voor het bestellen van onderdelen, het bouwen van het toetsenbord, het oplossen van problemen en het aanpassen van de firmware met Vial of QMK, waardoor het toegankelijk is, zelfs voor beginners die een capabel en aanpasbaar gesplitst toetsenbord willen bouwen zonder veel geld uit te geven. Gelicentieerd onder Creative Commons Attribution, belichaamt de Cheapino echt de geest van open-source toegankelijkheid in de toetsenbordgemeenschap.</p>
+    </div>
+
+    <div class="language-section" data-lang="et">
+        <h2>Eelarvelise poolitatud klaviatuuri ehitamine: Cheapino</h2>
+        <p>Kohandatud mehaaniliste klaviatuuride ehitamine võib olla kallis hobi, kuid avatud lähtekoodiga Cheapino projekt pakub värskendavat, eelarvesõbralikku alternatiivi. Taskukohasust silmas pidades disainitud Cheapino on märkimisväärselt üks odavamaid poolitatud klaviatuure, mida ise ehitada saab. See saavutatakse pööratava trükkplaadi (PCB), ühenduseks standardse RJ45-kaabli ja nutika Jaapani dupleksmaatriksi abil, mis võimaldab ühel mikrokontrolleril (MCU) juhtida mõlemat poolt.</p>
+        <p>Kuigi hotswap-lülitipistikute jaoks on korpus soovitatav, on lülitite otse trükkplaadile jootmine kõige ökonoomsem variant. Projekt pakub põhjalikke juhendeid osade tellimiseks, klaviatuuri ehitamiseks, probleemide lahendamiseks ja püsivara kohandamiseks Vial või QMK abil, muutes selle ligipääsetavaks isegi algajatele, kes soovivad ehitada võimeka ja kohandatava poolitatud klaviatuuri ilma palju raha kulutamata. Creative Commons Attribution litsentsi alusel litsentseeritud Cheapino kehastab tõeliselt avatud lähtekoodiga juurdepääsetavuse vaimu klaviatuurikogukonnas.</p>
+    </div>
+
+    <div class="language-section" data-lang="fi">
+        <h2>Budjettiystävällisen jaetun näppäimistön rakentaminen: Cheapino</h2>
+        <p>Mukautettujen mekaanisten näppäimistöjen rakentaminen voi olla kallista harrastus, mutta avoimen lähdekoodin Cheapino-projekti tarjoaa virkistävän, budjettiystävällisen vaihtoehdon. Edullisuutta silmällä pitäen suunniteltu Cheapino on huomattavasti yksi halvimmista jaetuista näppäimistöistä, jotka voit itse rakentaa. Tämä saavutetaan käyttämällä käännettävää piirilevyä (PCB), standardia RJ45-kaapelia liitäntään ja älykästä japanilaista duplex-matriisia, joka mahdollistaa yhden mikrokontrollerin (MCU) ohjaavan molempia puolia.</p>
+        <p>Vaikka koteloa suositellaan hotswap-kytkinliitännöille, kytkimien juottaminen suoraan piirilevylle on taloudellisin vaihtoehto. Projekti tarjoaa kattavat oppaat osien tilaamiseen, näppäimistön rakentamiseen, ongelmien vianmääritykseen ja laiteohjelmiston mukauttamiseen Vialin tai QMK:n avulla, tehden siitä saavutettavan jopa aloittelijoille, jotka haluavat rakentaa pätevän ja mukautettavan jaetun näppäimistön ilman suuria kustannuksia. Creative Commons Attribution -lisenssillä lisensoitu Cheapino todella ilmentää avoimen lähdekoodin saavutettavuuden henkeä näppäimistöyhteisössä.</p>
+    </div>
+
+    <div class="language-section" data-lang="lv">
+        <h2>Budžeta dalītās tastatūras būvniecība: Cheapino</h2>
+        <p>Pielāgotu mehānisko tastatūru būvniecība var būt dārgs hobijs, taču atvērtā koda projekts Cheapino piedāvā atsvaidzinošu, budžetam draudzīgu alternatīvu. Cheapino, kas izstrādāts, domājot par pieejamību, ir viena no lētākajām dalītajām tastatūrām, ko varat uzbūvēt pats. Tas tiek panākts, izmantojot abpusēju PCB (drukāto shēmas plati), standarta RJ45 kabeli savienojumam un gudru japāņu duplekso matricu, kas ļauj vienam mikrokontrollerim (MCU) kontrolēt abas puses.</p>
+        <p>Lai gan hotswap slēdžu ligzdām ieteicams izmantot korpusu, slēdžu pielodēšana tieši pie PCB ir visekonomiskākā iespēja. Projekts nodrošina visaptverošas rokasgrāmatas detaļu pasūtīšanai, tastatūras būvniecībai, problēmu novēršanai un programmaparatūras pielāgošanai, izmantojot Vial vai QMK, padarot to pieejamu pat iesācējiem, kuri vēlas uzbūvēt spējīgu un pielāgojamu dalītu tastatūru, netērējot daudz naudas. Licencēts saskaņā ar Creative Commons Attribution licenci, Cheapino patiesi iemieso atvērtā koda pieejamības garu tastatūru kopienā.</p>
+    </div>
+
+    <div class="language-section" data-lang="bg">
+        <h2>Изграждане на бюджетна разделетелна клавиатура: Cheapino</h2>
+        <p>Създаването на персонализирани механични клавиатури може да бъде скъпо хоби, но отвореният проект Cheapino предлага освежаваща, бюджетна алтернатива. Проектиран с мисъл за достъпността, Cheapino е забележително една от най-евтините разделетелни клавиатури, които можете да изградите сами. Това се постига чрез използване на реверсивна печатна платка (PCB), стандартен RJ45 кабел за свързване и интелигентна японска дуплексна матрица, която позволява на един микроконтролер (MCU) да контролира двете половини.</p>
+        <p>Докато се препоръчва кутия за контакти за бърза смяна на превключватели (hotswap), директното запояване на превключвателите към печатната платка е най-икономичният вариант. Проектът предоставя изчерпателни ръководства за поръчка на части, изграждане на клавиатурата, отстраняване на проблеми и персонализиране на фърмуера с помощта на Vial или QMK, което го прави достъпен дори за начинаещи, които искат да изградят способна и персонализирана разделетелна клавиатура, без да харчат много пари. Лицензиран под Creative Commons Attribution лиценз, Cheapino наистина въплъщава духа на отворения достъп в общността на клавиатурите.</p>
+    </div>
+
+    <div class="language-section" data-lang="lt">
+        <h2>Pigios padalintos klaviatūros kūrimas: Cheapino</h2>
+        <p>Individualizuotų mechaninių klaviatūrų kūrimas gali būti brangus hobis, tačiau atvirojo kodo projektas „Cheapino“ siūlo gaivią, biudžetui draugišką alternatyvą. Sukurtas atsižvelgiant į prieinamumą, „Cheapino“ yra viena pigiausių padalintų klaviatūrų, kurias galite susikurti patys. Tai pasiekiama naudojant reversinę PCB (spausdintinės plokštės), standartinį RJ45 kabelį ryšiui ir išmaniąją japonišką dvipusę matricą, kuri leidžia vienam mikrovaldikliui (MCU) valdyti abi puses.</p>
+        <p>Nors hotswap jungčių lizdams rekomenduojamas korpusas, jungčių litavimas tiesiai prie PCB yra ekonomiškiausias variantas. Projektas teikia išsamius vadovus dalių užsakymui, klaviatūros kūrimui, problemų sprendimui ir programinės aparatinės įrangos pritaikymui naudojant „Vial“ arba QMK, todėl jis prieinamas net pradedantiesiems, norintiems sukurti funkcionalią ir pritaikomą padalintą klaviatūrą neišleidžiant daug pinigų. Pagal „Creative Commons Attribution“ licenciją licencijuotas „Cheapino“ tikrai įkūnija atvirojo kodo prieinamumo dvasią klaviatūrų bendruomenėje.</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectElement = document.getElementById('language-select');
+            const languageSections = document.querySelectorAll('.language-section');
+
+            // Function to set the document's lang attribute
+            function setDocumentLang(lang) {
+                document.documentElement.setAttribute('lang', lang);
+            }
+
+            selectElement.addEventListener('change', function() {
+                const selectedLang = this.value;
+
+                // Hide all sections
+                languageSections.forEach(section => {
+                    section.classList.remove('active');
+                });
+
+                // Show the selected section and set document lang
+                const activeSection = document.querySelector(`.language-section[data-lang="${selectedLang}"]`);
+                if (activeSection) {
+                    activeSection.classList.add('active');
+                    setDocumentLang(selectedLang); // Update lang attribute
+                }
+            });
+
+            // Set initial language on page load
+            setDocumentLang(selectElement.value);
+        });
+    </script>
+
 </body>
 </html>
