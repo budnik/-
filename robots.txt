@@ -1,0 +1,7 @@
+# Allow all web crawlers access to all content
+User-agent: *
+Allow: /
+
+# Optional: Specify the location of the sitemap
+Sitemap: https://копійчина.d1b.dev/sitemap.xml
+
