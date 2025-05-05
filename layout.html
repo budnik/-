@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en"> <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building & Optimizing Your DIY Split Keyboard</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px 20px 80px 20px; /* Adjust bottom padding based on footer height + some buffer */
+            color: #333;
+            background-color: #f4f4f4;
+            box-sizing: border-box;
+        }
+
+        h1, h2 {
+            color: #0056b3;
+            margin-top: 0;
+        }
+
+        select {
+            margin-bottom: 20px;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            display: block;
+        }
+
+        /* Wrapper for the essay and background blocks */
+        .content-wrapper {
+            display: flex;
+            flex-direction: column; /* Mobile default */
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        /* Base styles for language sections */
+        .language-section {
+            display: none;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+            width: 100%;
+            min-height: 80vh;
+            overflow-y: auto;
+        }
+
+        /* Style for the active language section */
+        .language-section.active {
+            display: block;
+        }
+
+        /* Style for the background block */
+        .background-block {
+            position: relative; /* Needed to contain the absolutely positioned video */
+            width: 100%;
+            min-height: 80vh; /* Keep minimum height for mobile */
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            /* background-image: url('bg.gif'); REMOVED */
+            /* background-size: cover; REMOVED */
+            /* background-repeat: no-repeat; REMOVED */
+            /* background-position: center center; REMOVED */
+            box-sizing: border-box;
+            overflow: hidden; /* Hide parts of the video that overflow */
+        }
+
+        /* Style for the background video */
+        .background-block video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Make video cover the container, cropping if needed */
+            transform: translate(-50%, -50%); /* Center the video */
+            z-index: -1; /* Place video behind any potential content */
+            border-radius: inherit; /* Inherit border-radius from parent */
+        }
+
+
+        /* Comments Section Styles */
+        .comments-section {
+            margin-top: 40px;
+            border-top: 1px solid #ccc;
+            padding-top: 20px;
+        }
+        .comments-section h2 {
+             margin-top: 0;
+             color: #0056b3;
+        }
+        .comment {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            border: 1px solid #eee;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        .avatar {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            margin-right: 15px;
+        }
+        .avatar svg {
+            display: block;
+        }
+        .comment-content {
+            flex-grow: 1;
+        }
+        .user-name {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            color: #007bff;
+        }
+        .comment-text {
+            margin: 0;
+            color: #555;
+        }
+
+        /* Footer Styles */
+        .site-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(40, 40, 40, 0.85);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            color: #f0f0f0;
+            padding: 10px 20px;
+            text-align: center;
+            font-size: 0.9em;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+        .site-footer a {
+            color: #a0d8ff;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .site-footer a:hover {
+            text-decoration: underline;
+        }
+        .site-footer svg {
+            width: 1.2em;
+            height: 1.2em;
+            fill: currentColor;
+            vertical-align: middle;
+        }
+        /* Footer Styles */
+        .site-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(40, 40, 40, 0.75); /* Semi-transparent dark background */
+            backdrop-filter: blur(5px); /* Optional: Adds a blur effect to the background */
+            -webkit-backdrop-filter: blur(5px); /* Safari support */
+            color: #f0f0f0;
+            text-align: center;
+            font-size: 0.9em;
+            z-index: 1000; /* Ensure footer is on top */
+            display: flex; /* Use flexbox for alignment */
+            justify-content: end; /* Center items horizontally */
+            align-items: center; /* Center items vertically */
+            gap: 10px; /* Space between items */
+        }
+        .site-footer a {
+            color: #6d90b5; /* Light blue link color */
+            text-decoration: none;
+            display: inline-flex; /* Align icon and text */
+            align-items: center;
+            gap: 5px; /* Space between icon and text */
+        }
+        .site-footer a:hover {
+            text-decoration: underline;
+        }
+        .site-footer > a:last-of-type {
+            margin-right: 20px;
+        }
+        .site-footer svg {
+            width: 1.2em; /* Control icon size relative to font */
+            height: 1.2em;
+            fill: currentColor; /* Use the link's color for the icon */
+            vertical-align: middle; /* Align icon nicely with text */
+        }
+        /* Media Query for widescreen devices */
+        @media (min-width: 768px) {
+            .content-wrapper {
+                flex-direction: row;
+                gap: 40px;
+            }
+            .language-section.active {
+                width: 66.66%;
+                min-height: auto; /* Reset min-height for desktop */
+                overflow-y: visible;
+            }
+            .background-block {
+                width: 33.33%;
+                min-height: auto; /* Reset min-height for desktop */
+            }
+        }
+    </style>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-YEZ9RQNR5F"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-YEZ9RQNR5F');
+    </script>
+</head>
+<body>
+    <label for="language-select">Select Language:</label>
+    <select id="language-select">
+        <option value="en">English</option>
+        <option value="uk">Українська</option>
+        <option value="nl">Nederlands</option>
+        <option value="et">Eesti</option>
+        <option value="fi">Suomi</option>
+        <option value="lv">Latviešu</option>
+        <option value="bg">Български</option>
+        <option value="lt">Lietuvių</option>
+    </select>
+    <div class="content-wrapper">
+        <div class="language-section active" data-lang="en">
+            <h2>Building & Optimizing Your DIY Split Keyboard</h2>
+            <p>Building a custom split keyboard like the budget-friendly Cheapino is just the first step towards ergonomic bliss. Once assembled, the next crucial optimization is the <strong>keyboard layout</strong>. Sticking with the standard QWERTY layout, designed for typewriters, might limit the potential comfort and efficiency gains, especially on smaller, ortholinear, or columnar staggered boards common in the DIY scene.</p>
+            <p>Exploring alternative layouts can significantly reduce finger travel and awkward stretches. Layouts like <a href="https://workmanlayout.org/" target="_blank" rel="noopener noreferrer"><strong>Workman</strong></a> focus on minimizing lateral finger movement and balancing hand load. <a href="https://colemakmods.github.io/mod-dh/" target="_blank" rel="noopener noreferrer"><strong>Colemak Mod-DH</strong></a> modifies the popular Colemak layout to further improve comfort by moving common keys (D and H) to easier positions and reducing center-column usage. For very small keyboards (like 40% or even 36-key layouts), mastering <a href="https://peterxjang.com/blog/designing-a-36-key-custom-keyboard-layout.html" target="_blank" rel="noopener noreferrer"><strong>layers</strong></a> becomes essential. Similar to using 'Shift', layers allow access to numbers, symbols, function keys, and navigation keys without needing dedicated physical keys, keeping your fingers closer to the home row. Projects like <a href="https://github.com/manna-harbour/miryoku" target="_blank" rel="noopener noreferrer">Miryoku</a> offer pre-configured layer setups that are a great starting point for customization with firmware like QMK or Vial.</p>
+            <p>Ultimately, the "best" layout is subjective and depends on your typing habits, language, and specific tasks (like coding). Experimenting with different layouts and customizing layers is part of the fun and reward of building your own keyboard. Don't be afraid to try something new – your hands might thank you!</p>
+        </div>
+
+        <div class="language-section" data-lang="uk">
+            <h2>Створення та оптимізація вашої DIY розділеної клавіатури</h2>
+            <p>Створення власної розділеної клавіатури, такої як бюджетна Cheapino, — це лише перший крок до ергономічного блаженства. Після збирання наступною важливою оптимізацією є <strong>розкладка клавіатури</strong>. Використання стандартної розкладки QWERTY, розробленої для друкарських машинок, може обмежувати потенційний комфорт та ефективність, особливо на менших, ортолінійних або стовпчастих клавіатурах, поширених у DIY-спільноті.</p>
+            <p>Вивчення альтернативних розкладок може значно зменшити рух пальців та незручні розтягування. Розкладки, такі як <a href="https://workmanlayout.org/" target="_blank" rel="noopener noreferrer"><strong>Workman</strong></a>, зосереджені на мінімізації бічного руху пальців та збалансуванні навантаження на руки. <a href="https://colemakmods.github.io/mod-dh/" target="_blank" rel="noopener noreferrer"><strong>Colemak Mod-DH</strong></a> модифікує популярну розкладку Colemak для подальшого покращення комфорту, переміщуючи часто використовувані клавіші (D та H) у легші позиції та зменшуючи використання центрального стовпця. Для дуже маленьких клавіатур (наприклад, 40% або навіть 36-клавішних) освоєння <a href="https://peterxjang.com/blog/designing-a-36-key-custom-keyboard-layout.html" target="_blank" rel="noopener noreferrer"><strong>шарів</strong></a> стає необхідним. Подібно до використання 'Shift', шари дозволяють отримати доступ до цифр, символів, функціональних клавіш та клавіш навігації без необхідності виділених фізичних клавіш, тримаючи пальці ближче до домашнього ряду. Проєкти, такі як <a href="https://github.com/manna-harbour/miryoku" target="_blank" rel="noopener noreferrer">Miryoku</a>, пропонують попередньо налаштовані шари, які є чудовою відправною точкою для налаштування за допомогою прошивок, таких як QMK або Vial.</p>
+            <p>Зрештою, "найкраща" розкладка є суб'єктивною і залежить від ваших звичок набору тексту, мови та конкретних завдань (наприклад, кодування). Експериментування з різними розкладками та налаштування шарів є частиною задоволення та винагороди від створення власної клавіатури. Не бійтеся спробувати щось нове – ваші руки можуть вам подякувати!</p>
+        </div>
+
+        <div class="language-section" data-lang="nl">
+            <h2>Uw DIY Gesplitst Toetsenbord Bouwen & Optimaliseren</h2>
+            <p>Het bouwen van een aangepast gesplitst toetsenbord zoals de budgetvriendelijke Cheapino is slechts de eerste stap naar ergonomische gelukzaligheid. Eenmaal gemonteerd, is de volgende cruciale optimalisatie de <strong>toetsenbordindeling</strong>. Vasthouden aan de standaard QWERTY-indeling, ontworpen voor typemachines, kan de potentiële winst in comfort en efficiëntie beperken, vooral op kleinere, ortholineaire of kolomsgewijs verspringende borden die gebruikelijk zijn in de DIY-scene.</p>
+            <p>Het verkennen van alternatieve indelingen kan de vingerbewegingen en ongemakkelijke strekkingen aanzienlijk verminderen. Indelingen zoals <a href="https://workmanlayout.org/" target="_blank" rel="noopener noreferrer"><strong>Workman</strong></a> richten zich op het minimaliseren van zijwaartse vingerbewegingen en het balanceren van de belasting van de handen. <a href="https://colemakmods.github.io/mod-dh/" target="_blank" rel="noopener noreferrer"><strong>Colemak Mod-DH</strong></a> wijzigt de populaire Colemak-indeling om het comfort verder te verbeteren door veelgebruikte toetsen (D en H) naar gemakkelijkere posities te verplaatsen en het gebruik van de middelste kolom te verminderen. Voor zeer kleine toetsenborden (zoals 40% of zelfs 36-toetsenindelingen) wordt het beheersen van <a href="https://peterxjang.com/blog/designing-a-36-key-custom-keyboard-layout.html" target="_blank" rel="noopener noreferrer"><strong>lagen</strong></a> essentieel. Net als bij het gebruik van 'Shift', bieden lagen toegang tot cijfers, symbolen, functietoetsen en navigatietoetsen zonder dat er speciale fysieke toetsen nodig zijn, waardoor uw vingers dichter bij de thuisrij blijven. Projecten zoals <a href="https://github.com/manna-harbour/miryoku" target="_blank" rel="noopener noreferrer">Miryoku</a> bieden vooraf geconfigureerde laaginstellingen die een geweldig startpunt zijn voor aanpassing met firmware zoals QMK of Vial.</p>
+            <p>Uiteindelijk is de "beste" indeling subjectief en hangt deze af van uw typegewoonten, taal en specifieke taken (zoals coderen). Experimenteren met verschillende indelingen en het aanpassen van lagen maakt deel uit van het plezier en de beloning van het bouwen van uw eigen toetsenbord. Wees niet bang om iets nieuws te proberen – uw handen zullen u misschien dankbaar zijn!</p>
+        </div>
+
+        <div class="language-section" data-lang="et">
+            <h2>Oma DIY Poolitatud Klaviatuuri Ehitamine & Optimeerimine</h2>
+            <p>Kohandatud poolitatud klaviatuuri, nagu eelarvesõbralik Cheapino, ehitamine on alles esimene samm ergonoomilise õndsuse suunas. Pärast kokkupanekut on järgmine oluline optimeerimine <strong>klaviatuuripaigutus</strong>. Standardse QWERTY paigutuse kasutamine, mis on loodud kirjutusmasinatele, võib piirata potentsiaalset mugavuse ja tõhususe kasvu, eriti väiksematel, ortolineaarsetel või kolonniti nihutatud klaviatuuridel, mis on DIY-kogukonnas tavalised.</p>
+            <p>Alternatiivsete paigutuste uurimine võib märkimisväärselt vähendada sõrmede liikumist ja ebamugavaid venitusi. Paigutused nagu <a href="https://workmanlayout.org/" target="_blank" rel="noopener noreferrer"><strong>Workman</strong></a> keskenduvad külgsuunalise sõrmeliikumise minimeerimisele ja käte koormuse tasakaalustamisele. <a href="https://colemakmods.github.io/mod-dh/" target="_blank" rel="noopener noreferrer"><strong>Colemak Mod-DH</strong></a> muudab populaarset Colemaki paigutust, et mugavust veelgi parandada, viies tavalised klahvid (D ja H) lihtsamatesse asenditesse ja vähendades keskmise veeru kasutamist. Väga väikeste klaviatuuride (nagu 40% või isegi 36-klahvilised paigutused) puhul muutub <a href="https://peterxjang.com/blog/designing-a-36-key-custom-keyboard-layout.html" target="_blank" rel="noopener noreferrer"><strong>kihtide</strong></a> valdamine hädavajalikuks. Sarnaselt 'Shift' kasutamisega võimaldavad kihid juurdepääsu numbritele, sümbolitele, funktsiooniklahvidele ja navigeerimisklahvidele ilma spetsiaalsete füüsiliste klahvideta, hoides sõrmi kodurea lähedal. Projektid nagu <a href="https://github.com/manna-harbour/miryoku" target="_blank" rel="noopener noreferrer">Miryoku</a> pakuvad eelkonfigureeritud kihtide seadistusi, mis on suurepärane lähtepunkt kohandamiseks püsivaraga nagu QMK või Vial.</p>
+            <p>Lõppkokkuvõttes on "parim" paigutus subjektiivne ja sõltub teie trükkimisharjumustest, keelest ja konkreetsetest ülesannetest (nagu kodeerimine). Erinevate paigutustega katsetamine ja kihtide kohandamine on osa oma klaviatuuri ehitamise lõbust ja tasust. Ärge kartke proovida midagi uut – teie käed võivad teid tänada!</p>
+        </div>
+
+        <div class="language-section" data-lang="fi">
+            <h2>DIY Jaetun Näppäimistön Rakentaminen & Optimointi</h2>
+            <p>Mukautetun jaetun näppäimistön, kuten budjettiystävällisen Cheapinon, rakentaminen on vasta ensimmäinen askel kohti ergonomista autuutta. Kokoamisen jälkeen seuraava ratkaiseva optimointi on <strong>näppäimistöasettelu</strong>. Pitäytyminen standardissa QWERTY-asettelussa, joka on suunniteltu kirjoituskoneille, saattaa rajoittaa mahdollisia mukavuus- ja tehokkuushyötyjä, erityisesti pienemmillä, ortolineaarisilla tai sarakkeittain porrastetuilla näppäimistöillä, jotka ovat yleisiä DIY-piireissä.</p>
+            <p>Vaihtoehtoisten asettelujen tutkiminen voi merkittävästi vähentää sormien liikettä ja hankalia venytyksiä. Asettelut, kuten <a href="https://workmanlayout.org/" target="_blank" rel="noopener noreferrer"><strong>Workman</strong></a>, keskittyvät sivuttaisen sormiliikkeen minimoimiseen ja käsien kuormituksen tasapainottamiseen. <a href="https://colemakmods.github.io/mod-dh/" target="_blank" rel="noopener noreferrer"><strong>Colemak Mod-DH</strong></a> muokkaa suosittua Colemak-asettelua parantaakseen mukavuutta entisestään siirtämällä yleisiä näppäimiä (D ja H) helpompiin paikkoihin ja vähentämällä keskisarakeen käyttöä. Hyvin pienille näppäimistöille (kuten 40% tai jopa 36 näppäimen asettelut) <a href="https://peterxjang.com/blog/designing-a-36-key-custom-keyboard-layout.html" target="_blank" rel="noopener noreferrer"><strong>kerrosten</strong></a> hallitseminen on välttämätöntä. Samoin kuin 'Shift'-näppäimen käyttö, kerrokset mahdollistavat numeroiden, symbolien, toimintonäppäinten ja navigointinäppäinten käytön ilman erillisiä fyysisiä näppäimiä, pitäen sormesi lähempänä kotiriviä. Projektit, kuten <a href="https://github.com/manna-harbour/miryoku" target="_blank" rel="noopener noreferrer">Miryoku</a>, tarjoavat esiasetettuja kerrosasetuksia, jotka ovat loistava lähtökohta mukauttamiseen laiteohjelmistoilla, kuten QMK tai Vial.</p>
+            <p>Lopulta "paras" asettelu on subjektiivinen ja riippuu kirjoitustottumuksistasi, kielestäsi ja tietyistä tehtävistäsi (kuten koodaamisesta). Eri asettelujen kokeileminen ja kerrosten mukauttaminen on osa oman näppäimistön rakentamisen hauskuutta ja palkintoa. Älä pelkää kokeilla jotain uutta – kätesi saattavat kiittää sinua!</p>
+        </div>
+
+        <div class="language-section" data-lang="lv">
+            <h2>Sava DIY Dalītās Tastatūras Būvēšana & Optimizēšana</h2>
+            <p>Pielāgotas dalītās tastatūras, piemēram, budžetam draudzīgās Cheapino, izveide ir tikai pirmais solis ceļā uz ergonomisku svētlaimi. Pēc salikšanas nākamā būtiskā optimizācija ir <strong>tastatūras izkārtojums</strong>. Pieturēšanās pie standarta QWERTY izkārtojuma, kas izstrādāts rakstāmmašīnām, var ierobežot potenciālos komforta un efektivitātes ieguvumus, īpaši uz mazākām, ortolineārām vai kolonnās izkārtotām tastatūrām, kas ir izplatītas DIY aprindās.</p>
+            <p>Alternatīvu izkārtojumu izpēte var ievērojami samazināt pirkstu kustību un neērtu stiepšanos. Izkārtojumi, piemēram, <a href="https://workmanlayout.org/" target="_blank" rel="noopener noreferrer"><strong>Workman</strong></a>, koncentrējas uz sānu pirkstu kustības samazināšanu un roku slodzes līdzsvarošanu. <a href="https://colemakmods.github.io/mod-dh/" target="_blank" rel="noopener noreferrer"><strong>Colemak Mod-DH</strong></a> modificē populāro Colemak izkārtojumu, lai vēl vairāk uzlabotu komfortu, pārvietojot bieži lietotus taustiņus (D un H) uz vieglāk sasniedzamām pozīcijām un samazinot centrālās kolonnas lietošanu. Ļoti mazām tastatūrām (piemēram, 40% vai pat 36 taustiņu izkārtojumiem) <a href="https://peterxjang.com/blog/designing-a-36-key-custom-keyboard-layout.html" target="_blank" rel="noopener noreferrer"><strong>slāņu</strong></a> apgūšana kļūst būtiska. Līdzīgi kā 'Shift' lietošana, slāņi ļauj piekļūt cipariem, simboliem, funkciju taustiņiem un navigācijas taustiņiem bez nepieciešamības pēc īpašiem fiziskiem taustiņiem, turot pirkstus tuvāk sākuma rindai. Projekti, piemēram, <a href="https://github.com/manna-harbour/miryoku" target="_blank" rel="noopener noreferrer">Miryoku</a>, piedāvā iepriekš konfigurētus slāņu iestatījumus, kas ir lielisks sākumpunkts pielāgošanai ar programmaparatūru, piemēram, QMK vai Vial.</p>
+            <p>Galu galā "labākais" izkārtojums ir subjektīvs un atkarīgs no jūsu rakstīšanas paradumiem, valodas un konkrētiem uzdevumiem (piemēram, kodēšanas). Eksperimentēšana ar dažādiem izkārtojumiem un slāņu pielāgošana ir daļa no jautrības un gandarījuma, ko sniedz savas tastatūras būvēšana. Nebaidieties izmēģināt kaut ko jaunu – jūsu rokas varētu jums pateikties!</p>
+        </div>
+
+        <div class="language-section" data-lang="bg">
+            <h2>Изграждане и оптимизиране на вашата DIY разделена клавиатура</h2>
+            <p>Изграждането на персонализирана разделена клавиатура като бюджетната Cheapino е само първата стъпка към ергономичното блаженство. След като бъде сглобена, следващата решаваща оптимизация е <strong>клавиатурната подредба</strong>. Придържането към стандартната подредба QWERTY, проектирана за пишещи машини, може да ограничи потенциалните ползи за комфорт и ефективност, особено при по-малки, ортолинейни или колонно разположени клавиатури, често срещани в DIY сцената.</p>
+            <p>Изследването на алтернативни подредби може значително да намали движението на пръстите и неудобните разтягания. Подредби като <a href="https://workmanlayout.org/" target="_blank" rel="noopener noreferrer"><strong>Workman</strong></a> се фокусират върху минимизиране на страничното движение на пръстите и балансиране на натоварването на ръцете. <a href="https://colemakmods.github.io/mod-dh/" target="_blank" rel="noopener noreferrer"><strong>Colemak Mod-DH</strong></a> модифицира популярната подредба Colemak, за да подобри допълнително комфорта, като премести често използвани клавиши (D и H) на по-лесни позиции и намали използването на централната колона. За много малки клавиатури (като 40% или дори 36-клавишни подредби) овладяването на <a href="https://peterxjang.com/blog/designing-a-36-key-custom-keyboard-layout.html" target="_blank" rel="noopener noreferrer"><strong>слоевете</strong></a> става съществено. Подобно на използването на 'Shift', слоевете позволяват достъп до цифри, символи, функционални клавиши и навигационни клавиши, без да са необходими специални физически клавиши, като държат пръстите ви по-близо до основния ред. Проекти като <a href="https://github.com/manna-harbour/miryoku" target="_blank" rel="noopener noreferrer">Miryoku</a> предлагат предварително конфигурирани настройки на слоеве, които са чудесна отправна точка за персонализиране с фърмуер като QMK или Vial.</p>
+            <p>В крайна сметка „най-добрата“ подредба е субективна и зависи от вашите навици за писане, език и специфични задачи (като кодиране). Експериментирането с различни подредби и персонализирането на слоеве е част от забавлението и наградата от изграждането на собствена клавиатура. Не се страхувайте да опитате нещо ново – ръцете ви може да ви благодарят!</p>
+        </div>
+
+        <div class="language-section" data-lang="lt">
+            <h2>Savo „Pasidaryk Pats“ Padalintos Klaviatūros Kūrimas ir Optimizavimas</h2>
+            <p>Individualizuotos padalintos klaviatūros, tokios kaip biudžetui draugiška „Cheapino“, sukūrimas yra tik pirmas žingsnis link ergonominės palaimos. Surinkus, kitas svarbus optimizavimas yra <strong>klaviatūros išdėstymas</strong>. Laikantis standartinio QWERTY išdėstymo, sukurto rašomosioms mašinėlėms, gali apriboti potencialią komforto ir efektyvumo naudą, ypač mažesnėse, ortolinearinėse ar stulpeliais išdėstytose klaviatūrose, įprastose „pasidaryk pats“ (DIY) bendruomenėje.</p>
+            <p>Alternatyvių išdėstymų tyrinėjimas gali žymiai sumažinti pirštų judėjimą ir nepatogius tempimus. Išdėstymai, tokie kaip <a href="https://workmanlayout.org/" target="_blank" rel="noopener noreferrer"><strong>Workman</strong></a>, sutelkti į šoninio pirštų judėjimo minimizavimą ir rankų apkrovos balansavimą. <a href="https://colemakmods.github.io/mod-dh/" target="_blank" rel="noopener noreferrer"><strong>Colemak Mod-DH</strong></a> modifikuoja populiarų „Colemak“ išdėstymą, kad dar labiau pagerintų komfortą, perkeliant dažnai naudojamus klavišus (D ir H) į lengvesnes pozicijas ir sumažinant centrinio stulpelio naudojimą. Labai mažoms klaviatūroms (pvz., 40% ar net 36 klavišų išdėstymams) <a href="https://peterxjang.com/blog/designing-a-36-key-custom-keyboard-layout.html" target="_blank" rel="noopener noreferrer"><strong>sluoksnių</strong></a> įvaldymas tampa būtinas. Panašiai kaip naudojant „Shift“, sluoksniai leidžia pasiekti skaičius, simbolius, funkcinius klavišus ir naršymo klavišus be specialių fizinių klavišų, laikant pirštus arčiau pagrindinės eilutės. Projektai, tokie kaip <a href="https://github.com/manna-harbour/miryoku" target="_blank" rel="noopener noreferrer">Miryoku</a>, siūlo iš anksto sukonfigūruotus sluoksnių nustatymus, kurie yra puikus atspirties taškas pritaikymui naudojant programinę įrangą, pvz., QMK ar „Vial“.</p>
+            <p>Galiausiai, „geriausias“ išdėstymas yra subjektyvus ir priklauso nuo jūsų spausdinimo įpročių, kalbos ir konkrečių užduočių (pvz., kodavimo). Eksperimentavimas su skirtingais išdėstymais ir sluoksnių pritaikymas yra dalis malonumo ir atlygio kuriant savo klaviatūrą. Nebijokite išbandyti kažko naujo – jūsų rankos gali jums padėkoti!</p>
+        </div>
+
+        <div class="background-block">
+            <video autoplay loop muted playsinline>
+                <source src="layout.mp4" type="video/mp4">
+                Your browser does not support the video tag. </video>
+        </div>
+    </div>
+
+    <div class="comments-section"></div>
+    <footer class="site-footer">
+        <span>
+            &copy;<script>document.write(new Date().getFullYear())</script> <a href="https://github.com/budnik" target="_blank" rel="noopener noreferrer">Dmytro Budnyk</a>
+        </span>
+        <a href="https://bsky.app/profile/d1b.dev" target="_blank" rel="noopener noreferrer" aria-label="Bluesky Profile">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
+                <path d="m135.72 44.03c66.496 49.921 138.02 151.14 164.28 205.46 26.262-54.316 97.782-155.54 164.28-205.46 47.98-36.021 125.72-63.892 125.72 24.795 0 17.712-10.155 148.79-16.111 170.07-20.703 73.984-96.144 92.854-163.25 81.433 117.3 19.964 147.14 86.092 82.697 152.22-122.39 125.59-175.91-31.511-189.63-71.766-2.514-7.3797-3.6904-10.832-3.7077-7.8964-0.0174-2.9357-1.1937 0.51669-3.7077 7.8964-13.714 40.255-67.233 197.36-189.63 71.766-64.444-66.128-34.605-132.26 82.697-152.22-67.108 11.421-142.55-7.4491-163.25-81.433-5.9562-21.282-16.111-152.36-16.111-170.07 0-88.687 77.742-60.816 125.72-24.795z"></path>
+            </svg>
+        </a>
+        <a href="https://x.com/d1b" target="_blank" rel="noopener noreferrer" aria-label="X.com Profile">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+            </svg>
+        </a>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectElement = document.getElementById('language-select');
+            const languageSections = document.querySelectorAll('.language-section');
+            const commentsSection = document.querySelector('.comments-section');
+
+            // --- Centralized Fake Data ---
+            const fakeData = {
+                 avatars: [ // Keep existing avatars
+                    `<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#a0c0e0"/><circle cx="15" cy="18" r="3" fill="#333"/><circle cx="25" cy="18" r="3" fill="#333"/><path d="M 15 25 Q 20 30 25 25" stroke="#333" fill="none" stroke-width="2"/></svg>`,
+                    `<svg width="40" height="40" viewBox="0 0 40 40"><rect x="5" y="10" width="30" height="25" rx="12.5" fill="#c0a080"/><rect x="10" y="5" width="20" height="10" rx="5" fill="#806040"/><circle cx="15" cy="20" r="2" fill="#333"/><circle cx="25" cy="20" r="2" fill="#333"/></svg>`,
+                    `<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#b0e0b0"/><rect x="10" y="5" width="20" height="10" fill="#804040"/><circle cx="15" cy="22" r="2" fill="#333"/><circle cx="25" cy="22" r="2" fill="#333"/></svg>`,
+                    `<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#f0d0b0"/><rect x="12" y="16" width="16" height="8" rx="2" fill="none" stroke="#333" stroke-width="2"/><circle cx="15" cy="20" r="2" fill="#333"/><circle cx="25" cy="20" r="2" fill="#333"/></svg>`,
+                    `<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#e0c0a0"/><rect x="10" y="30" width="20" height="5" rx="2" fill="#604020"/><circle cx="15" cy="18" r="3" fill="#333"/><circle cx="25" cy="18" r="3" fill="#333"/></svg>`,
+                    `<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#a0d0f0"/><path d="M 10 15 Q 20 5 30 15" stroke="#402000" fill="none" stroke-width="4" stroke-linecap="round"/><circle cx="15" cy="22" r="2" fill="#333"/><circle cx="25" cy="22" r="2" fill="#333"/></svg>`,
+                    `<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#d0a0c0"/><rect x="12" y="10" width="16" height="5" fill="#503040"/><circle cx="15" cy="20" r="2" fill="#333"/><circle cx="25" cy="20" r="2" fill="#333"/></svg>`,
+                    `<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#c0e0d0"/><rect x="10" y="5" width="20" height="10" rx="5" fill="#202020"/><circle cx="15" cy="20" r="2" fill="#fff"/><circle cx="25" cy="20" r="2" fill="#fff"/></svg>`,
+                    `<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#f0e0a0"/><rect x="10" y="15" width="20" height="10" fill="none" stroke="#502000" stroke-width="2" rx="5"/><circle cx="15" cy="20" r="2" fill="#333"/><circle cx="25" cy="20" r="2" fill="#333"/></svg>`,
+                    `<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#a0b0c0"/><path d="M 10 15 C 10 5 30 5 30 15 Z" fill="#401010"/><circle cx="15" cy="22" r="2" fill="#333"/><circle cx="25" cy="22" r="2" fill="#333"/></svg>`,
+                    `<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#e0b0d0"/><path d="M 10 15 C 10 5 30 5 30 15" fill="#603040"/><circle cx="15" cy="22" r="2" fill="#333"/><circle cx="25" cy="22" r="2" fill="#333"/><circle cx="20" cy="30" r="3" fill="#502030"/></svg>`,
+                    `<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#c0c0a0"/><rect x="12" y="12" width="16" height="4" fill="#333"/><circle cx="15" cy="20" r="2" fill="#fff"/><circle cx="25" cy="20" r="2" fill="#fff"/><path d="M 15 28 Q 20 32 25 28" stroke="#333" fill="none" stroke-width="2"/></svg>`,
+                    `<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#b0a0e0"/><rect x="10" y="5" width="20" height="10" rx="5" fill="#204060"/><circle cx="15" cy="20" r="2" fill="#fff"/><circle cx="25" cy="20" r="2" fill="#fff"/><path d="M 15 28 L 25 28" stroke="#333" fill="none" stroke-width="2"/></svg>`,
+                    `<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#e0a0a0"/><circle cx="15" cy="18" r="3" fill="#333"/><circle cx="25" cy="18" r="3" fill="#333"/><path d="M 15 25 C 18 28 22 28 25 25" stroke="#333" fill="none" stroke-width="2"/></svg>`,
+                    `<svg width="40" height="40" viewBox="0 0 40 40"><rect x="5" y="10" width="30" height="25" rx="12.5" fill="#a08060"/><rect x="10" y="5" width="20" height="10" fill="#402010"/><circle cx="15" cy="20" r="2" fill="#333"/><circle cx="25" cy="20" r="2" fill="#333"/></svg>`,
+                    `<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#c0b0a0"/><rect x="12" y="16" width="16" height="8" rx="2" fill="none" stroke="#502000" stroke-width="2"/><circle cx="15" cy="20" r="2" fill="#333"/><circle cx="25" cy="20" r="2" fill="#333"/><path d="M 15 30 Q 20 28 25 30" stroke="#333" fill="none" stroke-width="2"/></svg>`,
+                    `<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#b0c0a0"/><rect x="10" y="30" width="20" height="5" rx="2" fill="#405030"/><circle cx="15" cy="18" r="3" fill="#333"/><circle cx="25" cy="18" r="3" fill="#333"/></svg>`,
+                    `<svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#d0e0f0"/><path d="M 10 15 Q 20 5 30 15" stroke="#201040" fill="none" stroke-width="4" stroke-linecap="round"/><circle cx="15" cy="22" r="2" fill="#333"/><circle cx="25" cy="22" r="2" fill="#333"/></svg>`,
+                ],
+                names: { // Keep existing names and genders
+                    en: [ { name: "John", gender: "male" }, { name: "Mary", gender: "female" }, { name: "Michael", gender: "male" }, { name: "Sarah", gender: "female" }, { name: "James", gender: "male" }, { name: "Emily", gender: "female" }, { name: "David", gender: "male" }, { name: "Jessica", gender: "female" }, { name: "Robert", gender: "male" }, { name: "Ashley", gender: "female" }, { name: "William", gender: "male" }, { name: "Elizabeth", gender: "female" }, { name: "Richard", gender: "male" }, { name: "Jennifer", gender: "female" }, { name: "Charles", gender: "male" }, { name: "Linda", gender: "female" }, { name: "Thomas", gender: "male" }, { name: "Patricia", gender: "female" }, { name: "Christopher", gender: "male" }, { name: "Susan", gender: "female" } ],
+                    uk: [ { name: "Олександр", gender: "male" }, { name: "Ольга", gender: "female" }, { name: "Сергій", gender: "male" }, { name: "Наталія", gender: "female" }, { name: "Іван", gender: "male" }, { name: "Анна", gender: "female" }, { name: "Василь", gender: "male" }, { name: "Олена", gender: "female" }, { name: "Андрій", gender: "male" }, { name: "Тетяна", gender: "female" }, { name: "Микола", gender: "male" }, { name: "Галина", gender: "female" }, { name: "Володимир", gender: "male" }, { name: "Людмила", gender: "female" }, { name: "Дмитро", gender: "male" }, { name: "Катерина", gender: "female" }, { name: "Петро", gender: "male" }, { name: "Марія", gender: "female" }, { name: "Павло", gender: "male" }, { name: "Надія", gender: "female" } ],
+                    nl: [ { name: "Jan", gender: "male" }, { name: "Maria", gender: "female" }, { name: "Cornelis", gender: "male" }, { name: "Johanna", gender: "female" }, { name: "Johannes", gender: "male" }, { name: "Anna", gender: "female" }, { name: "Petrus", gender: "male" }, { name: "Elisabeth", gender: "female" }, { name: "Hendrik", gender: "male" }, { name: "Margaretha", gender: "female" }, { name: "Jacobus", gender: "male" }, { name: "Catharina", gender: "female" }, { name: "Willem", gender: "male" }, { name: "Petronella", gender: "female" }, { name: "Gerardus", gender: "male" }, { name: "Christina", gender: "female" }, { name: "Dirk", gender: "male" }, { name: "Adriana", gender: "female" }, { name: "Maarten", gender: "male" }, { name: "Wilhelmina", gender: "female" } ],
+                    et: [ { name: "Rein", gender: "male" }, { name: "Anne", gender: "female" }, { name: "Toomas", gender: "male" }, { name: "Katrin", gender: "female" }, { name: "Mart", gender: "male" }, { name: "Mare", gender: "female" }, { name: "Andres", gender: "male" }, { name: "Sirje", gender: "female" }, { name: "Peeter", gender: "male" }, { name: "Tiina", gender: "female" }, { name: "Jüri", gender: "male" }, { name: "Reet", gender: "female" }, { name: "Mati", gender: "male" }, { name: "Ene", gender: "female" }, { name: "Priit", gender: "male" }, { name: "Mall", gender: "female" }, { name: "Meelis", gender: "male" }, { name: "Kristiina", gender: "female" }, { name: "Indrek", gender: "male" }, { name: "Laura", gender: "female" } ],
+                    fi: [ { name: "Juha", gender: "male" }, { name: "Marjatta", gender: "female" }, { name: "Matti", gender: "male" }, { name: "Pirkko", gender: "female" }, { name: "Kari", gender: "male" }, { name: "Anneli", gender: "female" }, { name: "Mika", gender: "male" }, { name: "Hannele", gender: "female" }, { name: "Timo", gender: "male" }, { name: "Leena", gender: "female" }, { name: "Veli", gender: "male" }, { name: "Ritva", gender: "female" }, { name: "Pekka", gender: "male" }, { name: "Helena", gender: "female" }, { name: "Antti", gender: "male" }, { name: "Sirkka", gender: "female" }, { name: "Jari", gender: "male" }, { name: "Eeva", gender: "female" }, { name: "Markku", gender: "male" }, { name: "Sari", gender: "female" } ],
+                    lv: [ { name: "Jānis", gender: "male" }, { name: "Anna", gender: "female" }, { name: "Edgars", gender: "male" }, { name: "Kristīne", gender: "female" }, { name: "Valdis", gender: "male" }, { name: "Ilze", gender: "female" }, { name: "Andris", gender: "male" }, { name: "Inga", gender: "female" }, { name: "Juris", gender: "male" }, { name: "Dace", gender: "female" }, { name: "Pēteris", gender: "male" }, { name: "Līga", gender: "female" }, { name: "Māris", gender: "male" }, { name: "Sarmīte", gender: "female" }, { name: "Aigars", gender: "male" }, { name: "Iveta", gender: "female" }, { name: "Dainis", gender: "male" }, { name: "Zane", gender: "female" }, { name: "Artūrs", gender: "male" }, { name: "Anita", gender: "female" } ],
+                    bg: [ { name: "Георги", gender: "male" }, { name: "Иванка", gender: "female" }, { name: "Иван", gender: "male" }, { name: "Мария", gender: "female" }, { name: "Димитър", gender: "male" }, { name: "Петя", gender: "female" }, { name: "Николай", gender: "male" }, { name: "Елена", gender: "female" }, { name: "Васил", gender: "male" }, { name: "Йорданка", gender: "female" }, { name: "Петър", gender: "male" }, { name: "Надежда", gender: "female" }, { name: "Александър", gender: "male" }, { name: "Десислава", gender: "female" }, { name: "Тодор", gender: "male" }, { name: "Маргарита", gender: "female" }, { name: "Стефан", gender: "male" }, { name: "Даниела", gender: "female" }, { name: "Христо", gender: "male" }, { name: "Виолета", gender: "female" } ],
+                    lt: [ { name: "Jonas", gender: "male" }, { name: "Irena", gender: "female" }, { name: "Antanas", gender: "male" }, { name: "Janina", gender: "female" }, { name: "Petras", gender: "male" }, { name: "Ona", gender: "female" }, { name: "Juozas", gender: "male" }, { name: "Danutė", gender: "female" }, { name: "Vytautas", gender: "male" }, { name: "Aldona", gender: "female" }, { name: "Kazys", gender: "male" }, { name: "Zofija", gender: "female" }, { name: "Bronius", gender: "male" }, { name: "Marija", gender: "female" }, { name: "Vladislovas", gender: "male" }, { name: "Regina", gender: "female" }, { name: "Algirdas", gender: "male" }, { name: "Rasa", gender: "female" }, { name: "Mindaugas", gender: "male" }, { name: "Laima", gender: "female" } ]
+                },
+                comments: { // Keep updated comments
+                    en: [
+                        "Switching to Colemak-DH was tough at first, but worth it!", "How do layers work on a 36-key board?",
+                        "Workman feels much more natural than QWERTY for my wrists.", "Is Miryoku a good starting point for QMK layers?",
+                        "Love the idea of reducing finger travel!", "QWERTY is just too ingrained for me to switch.",
+                        "Building the keyboard was fun, now the layout challenge begins!", "Which layout is best for coding special characters?",
+                        "Ortholinear + Colemak = endgame?", "Still figuring out my symbol layer.",
+                        "The Cheapino is great, but the layout makes the real difference.", "Anyone using Workman for programming?",
+                        "Layers seemed intimidating, but Vial makes it easier.", "My typing speed dropped initially, but comfort increased.",
+                        "Split boards are already more ergonomic, layout is the next level.", "Thinking about trying Hands Down layout.",
+                        "Customizing layers is addictive!", "What's the benefit of Mod-DH over standard Colemak?",
+                        "This article convinced me to ditch QWERTY.", "Need a good layout for Vim on a 40%."
+                    ],
+                    uk: [
+                        "Перехід на Colemak-DH спочатку був важким, але вартим того!", "Як працюють шари на 36-клавішній клавіатурі?",
+                        "Workman відчувається набагато природніше для моїх зап'ясть, ніж QWERTY.", "Чи є Miryoku гарною відправною точкою для шарів QMK?",
+                        "Подобається ідея зменшення руху пальців!", "QWERTY занадто вкорінилася, щоб я перейшов(ла).",
+                        "Збирання клавіатури було веселим, тепер починається виклик з розкладкою!", "Яка розкладка найкраща для кодування зі спецсимволами?",
+                        "Ортолінійна + Colemak = ендгейм?", "Все ще розбираюся зі своїм шаром символів.",
+                        "Cheapino чудова, але розкладка робить справжню різницю.", "Хтось використовує Workman для програмування?",
+                        "Шари здавалися страшними, але Vial полегшує справу.", "Моя швидкість друку спочатку впала, але комфорт зріс.",
+                        "Розділені плати вже ергономічніші, розкладка - це наступний рівень.", "Думаю спробувати розкладку Hands Down.",
+                        "Налаштування шарів викликає залежність!", "Яка перевага Mod-DH над стандартним Colemak?",
+                        "Ця стаття переконала мене відмовитися від QWERTY.", "Потрібна хороша розкладка для Vim на 40%."
+                    ],
+                    nl: [
+                        "Overstappen naar Colemak-DH was eerst moeilijk, maar de moeite waard!", "Hoe werken lagen op een 36-toetsenbord?",
+                        "Workman voelt veel natuurlijker aan voor mijn polsen dan QWERTY.", "Is Miryoku een goed startpunt voor QMK-lagen?",
+                        "Geweldig idee om vingerbewegingen te verminderen!", "QWERTY zit er bij mij te diep ingebakken om te wisselen.",
+                        "Het toetsenbord bouwen was leuk, nu begint de uitdaging met de indeling!", "Welke indeling is het beste voor coderen met speciale tekens?",
+                        "Ortholineair + Colemak = endgame?", "Ben nog steeds mijn symbolenlaag aan het uitzoeken.",
+                        "De Cheapino is geweldig, maar de indeling maakt het echte verschil.", "Gebruikt iemand Workman voor programmeren?",
+                        "Lagen leken intimiderend, maar Vial maakt het makkelijker.", "Mijn typsnelheid daalde eerst, maar het comfort nam toe.",
+                        "Gesplitste borden zijn al ergonomischer, de indeling is het volgende niveau.", "Overweeg om de Hands Down-indeling te proberen.",
+                        "Lagen aanpassen is verslavend!", "Wat is het voordeel van Mod-DH t.o.v. standaard Colemak?",
+                        "Dit artikel heeft me overtuigd om QWERTY te dumpen.", "Heb een goede indeling nodig voor Vim op een 40%."
+                    ],
+                    et: [
+                        "Colemak-DH-le üleminek oli alguses raske, kuid seda väärt!", "Kuidas kihid 36-klahvilisel klaviatuuril töötavad?",
+                        "Workman tundub mu randmetele palju loomulikum kui QWERTY.", "Kas Miryoku on hea lähtepunkt QMK kihtide jaoks?",
+                        "Meeldib idee sõrmede liikumise vähendamisest!", "QWERTY on minu jaoks liiga sisse juurdunud, et vahetada.",
+                        "Klaviatuuri ehitamine oli lõbus, nüüd algab paigutuse väljakutse!", "Milline paigutus on parim erimärkidega kodeerimiseks?",
+                        "Ortolineaarne + Colemak = lõppmäng?", "Ikka veel nuputan oma sümbolikihti.",
+                        "Cheapino on suurepärane, kuid paigutus teeb tõelise vahe.", "Kas keegi kasutab Workmani programmeerimiseks?",
+                        "Kihid tundusid hirmutavad, kuid Vial teeb selle lihtsamaks.", "Mu trükkimiskiirus alguses langes, kuid mugavus suurenes.",
+                        "Poolitatud klaviatuurid on juba ergonoomilisemad, paigutus on järgmine tase.", "Mõtlen proovida Hands Down paigutust.",
+                        "Kihtide kohandamine tekitab sõltuvust!", "Mis on Mod-DH eelis standardse Colemaki ees?",
+                        "See artikkel veenis mind QWERTY-st loobuma.", "Vajan head paigutust Vimi jaoks 40% klaviatuuril."
+                    ],
+                    fi: [
+                        "Colemak-DH:hon vaihtaminen oli aluksi vaikeaa, mutta sen arvoista!", "Miten kerrokset toimivat 36-näppäimisellä laudalla?",
+                        "Workman tuntuu paljon luonnollisemmalta ranteilleni kuin QWERTY.", "Onko Miryoku hyvä lähtökohta QMK-kerroksille?",
+                        "Rakastan ajatusta sormien liikkeen vähentämisestä!", "QWERTY on vain liian syvällä minussa vaihtaakseni.",
+                        "Näppäimistön rakentaminen oli hauskaa, nyt alkaa asetteluhaaste!", "Mikä asettelu on paras koodaamiseen erikoismerkeillä?",
+                        "Ortolineaarinen + Colemak = loppupeli?", "Selvitän yhä symbolikerrostani.",
+                        "Cheapino on hieno, mutta asettelu tekee todellisen eron.", "Käyttääkö kukaan Workmania ohjelmointiin?",
+                        "Kerrokset vaikuttivat pelottavilta, mutta Vial helpottaa sitä.", "Kirjoitusnopeus laski aluksi, mutta mukavuus lisääntyi.",
+                        "Jaetut laudat ovat jo ergonomisempia, asettelu on seuraava taso.", "Ajattelen kokeilla Hands Down -asettelua.",
+                        "Kerrosten mukauttaminen on koukuttavaa!", "Mitä hyötyä Mod-DH:sta on tavalliseen Colemakiin verrattuna?",
+                        "Tämä artikkeli vakuutti minut hylkäämään QWERTY:n.", "Tarvitsen hyvän asettelun Vimille 40%-laudalla."
+                    ],
+                    lv: [
+                        "Pāreja uz Colemak-DH sākumā bija grūta, bet tā vērta!", "Kā slāņi darbojas uz 36 taustiņu dēļa?",
+                        "Workman manām plaukstām šķiet daudz dabiskāks nekā QWERTY.", "Vai Miryoku ir labs sākumpunkts QMK slāņiem?",
+                        "Patīk ideja samazināt pirkstu kustību!", "QWERTY man ir pārāk iesakņojies, lai mainītu.",
+                        "Tastatūras būvēšana bija jautra, tagad sākas izkārtojuma izaicinājums!", "Kurš izkārtojums ir labākais kodēšanai ar īpašajiem simboliem?",
+                        "Ortolineārs + Colemak = beigu spēle?", "Vēl joprojām mēģinu sakārtot savu simbolu slāni.",
+                        "Cheapino ir lielisks, bet izkārtojums rada īsto atšķirību.", "Vai kāds izmanto Workman programmēšanai?",
+                        "Slāņi šķita biedējoši, bet Vial to atvieglo.", "Mans rakstīšanas ātrums sākumā samazinājās, bet komforts palielinājās.",
+                        "Dalītie dēļi jau ir ergonomiskāki, izkārtojums ir nākamais līmenis.", "Domāju izmēģināt Hands Down izkārtojumu.",
+                        "Slāņu pielāgošana izraisa atkarību!", "Kādas ir Mod-DH priekšrocības salīdzinājumā ar standarta Colemak?",
+                        "Šis raksts mani pārliecināja atteikties no QWERTY.", "Vajag labu izkārtojumu priekš Vim uz 40%."
+                    ],
+                    bg: [
+                        "Преминаването към Colemak-DH беше трудно в началото, но си заслужаваше!", "Как работят слоевете на 36-клавишна клавиатура?",
+                        "Workman се усеща много по-естествено за китките ми от QWERTY.", "Miryoku добра отправна точка ли е за QMK слоеве?",
+                        "Харесва ми идеята за намаляване на движението на пръстите!", "QWERTY е твърде вкоренен в мен, за да го сменя.",
+                        "Сглобяването на клавиатурата беше забавно, сега започва предизвикателството с подредбата!", "Коя подредба е най-добра за кодиране със специални символи?",
+                        "Ортолинейна + Colemak = край на играта?", "Все още разучавам слоя си със символи.",
+                        "Cheapino е страхотна, но подредбата прави истинската разлика.", "Някой използва ли Workman за програмиране?",
+                        "Слоевете изглеждаха плашещи, но Vial го улеснява.", "Скоростта ми на писане първоначално спадна, но комфортът се увеличи.",
+                        "Разделените клавиатури вече са по-ергономични, подредбата е следващото ниво.", "Мисля да опитам подредбата Hands Down.",
+                        "Персонализирането на слоеве води до пристрастяване!", "Какво е предимството на Mod-DH пред стандартния Colemak?",
+                        "Тази статия ме убеди да зарежа QWERTY.", "Трябва ми добра подредба за Vim на 40%."
+                    ],
+                    lt: [
+                        "Pereiti prie Colemak-DH iš pradžių buvo sunku, bet verta!", "Kaip veikia sluoksniai 36 klavišų lentoje?",
+                        "Workman mano riešams atrodo daug natūralesnis nei QWERTY.", "Ar Miryoku yra geras atspirties taškas QMK sluoksniams?",
+                        "Patinka idėja sumažinti pirštų judėjimą!", "QWERTY man per daug įaugęs, kad keisčiau.",
+                        "Klaviatūros konstravimas buvo smagus, dabar prasideda išdėstymo iššūkis!", "Kuris išdėstymas geriausias koduoti su specialiais simboliais?",
+                        "Ortolinearinis + Colemak = galutinis žaidimas?", "Vis dar bandau susitvarkyti savo simbolių sluoksnį.",
+                        "Cheapino yra puiki, bet išdėstymas daro tikrą skirtumą.", "Ar kas nors naudoja Workman programavimui?",
+                        "Sluoksniai atrodė bauginančiai, bet Vial tai palengvina.", "Mano spausdinimo greitis iš pradžių sumažėjo, bet komfortas padidėjo.",
+                        "Padalintos lentos jau yra ergonomiškesnės, išdėstymas yra kitas lygis.", "Galvoju išbandyti Hands Down išdėstymą.",
+                        "Sluoksnių pritaikymas sukelia priklausomybę!", "Koks Mod-DH pranašumas prieš standartinį Colemak?",
+                        "Šis straipsnis įtikino mane atsisakyti QWERTY.", "Reikia gero išdėstymo Vimui ant 40%."
+                    ]
+                }
+            };
+
+            // --- Language Switching Logic ---
+            function setDocumentLang(lang) {
+                document.documentElement.setAttribute('lang', lang);
+            }
+
+            selectElement.addEventListener('change', function() {
+                const selectedLang = this.value;
+                languageSections.forEach(section => {
+                    section.classList.remove('active');
+                });
+                const activeSection = document.querySelector(`.language-section[data-lang="${selectedLang}"]`);
+                if (activeSection) {
+                    activeSection.classList.add('active');
+                    setDocumentLang(selectedLang);
+                }
+            });
+
+            // Set initial language on page load
+            setDocumentLang(selectElement.value);
+
+            // --- S-Curve Calculation ---
+            function calculateCommentsToShow(currentDate) {
+                const startDate = new Date('2025-05-10'); // YYYY-MM-DD
+                const endDate = new Date('2025-12-01');   // YYYY-MM-DD
+                const minComments = 1;
+                const maxComments = 80; // Target max comments
+
+                const startMillis = Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+                const endMillis = Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+                const currentMillis = Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+
+                if (currentMillis < startMillis) return minComments;
+                if (currentMillis >= endMillis) return maxComments;
+
+                const totalDuration = endMillis - startMillis;
+                const currentDuration = currentMillis - startMillis;
+                const x = currentDuration / totalDuration;
+
+                const L = maxComments - minComments;
+                const k = 10;
+                const x0 = 0.5;
+
+                const sigmoidValue = L / (1 + Math.exp(-k * (x - x0)));
+                const numComments = Math.round(minComments + sigmoidValue);
+
+                return Math.max(minComments, Math.min(maxComments, numComments));
+            }
+
+            // --- Deterministic Shuffle ---
+            function seededShuffle(array, seed) {
+                let currentIndex = array.length, temporaryValue, randomIndex;
+                const random = function() {
+                    const a = 1103515245;
+                    const c = 12345;
+                    const m = Math.pow(2, 31);
+                    seed = (a * seed + c) % m;
+                    return seed / m;
+                };
+
+                while (0 !== currentIndex) {
+                    randomIndex = Math.floor(random() * currentIndex);
+                    currentIndex -= 1;
+                    temporaryValue = array[currentIndex];
+                    array[currentIndex] = array[randomIndex];
+                    array[randomIndex] = temporaryValue;
+                }
+                return array;
+            }
+
+
+            // --- Comment Generation Logic ---
+            function generateComments() {
+                const today = new Date();
+                const numberOfCommentsToShow = calculateCommentsToShow(today);
+
+                const year = today.getFullYear();
+                const month = String(today.getMonth() + 1).padStart(2, '0');
+                const day = String(today.getDate()).padStart(2, '0');
+                const dateSeed = parseInt(`${year}${month}${day}`, 10);
+
+                let allPossibleComments = [];
+                const languages = Object.keys(fakeData.names);
+
+                languages.forEach(lang => {
+                    if (fakeData.names[lang] && fakeData.comments[lang]) {
+                        const namesInLang = fakeData.names[lang];
+                        const commentsInLang = fakeData.comments[lang];
+                        const numNames = namesInLang.length;
+                        const numComments = commentsInLang.length;
+                        const numAvatars = fakeData.avatars.length;
+                        const combinationsToGenerate = numComments * 2; // Generate more combinations
+
+                        for (let i = 0; i < combinationsToGenerate; i++) {
+                             const nameData = namesInLang[i % numNames];
+                             const commentText = commentsInLang[i % numComments];
+                             const avatarHtml = fakeData.avatars[i % numAvatars];
+                             allPossibleComments.push({
+                                 lang: lang, name: nameData.name, gender: nameData.gender,
+                                 avatar: avatarHtml, text: commentText
+                             });
+                        }
+                    } else {
+                         console.warn(`Missing names or comments for language: ${lang}`);
+                    }
+                });
+
+                seededShuffle(allPossibleComments, dateSeed);
+                const commentsToDisplay = allPossibleComments.slice(0, numberOfCommentsToShow);
+
+                let commentsHtml = '';
+                commentsToDisplay.forEach(commentData => {
+                    let finalText = commentData.text;
+                    // Basic gender handling (remove hints)
+                    if (commentData.gender === 'male') {
+                        finalText = finalText.replace(/\(а\)/g, '').replace(/\(ла\)/g, '').replace(/\(usi\)/g, '');
+                    } else { // female or neutral
+                         finalText = finalText.replace(/\(/g, '').replace(/\)/g, '');
+                    }
+
+                    commentsHtml += `
+                        <div class="comment">
+                            <div class="avatar">${commentData.avatar}</div>
+                            <div class="comment-content">
+                                <span class="user-name">${commentData.name}</span>
+                                <p class="comment-text">${finalText}</p>
+                            </div>
+                        </div>`;
+                });
+
+                const commentsHeader = commentsSection.querySelector('h2');
+                while (commentsHeader && commentsHeader.nextSibling) {
+                    commentsSection.removeChild(commentsHeader.nextSibling);
+                }
+                if (commentsHeader) {
+                    commentsHeader.insertAdjacentHTML('afterend', commentsHtml);
+                } else {
+                    commentsSection.innerHTML = `<h2>Comments</h2>${commentsHtml}`;
+                }
+            }
+
+            // --- Initial Setup ---
+            generateComments();
+
+        });
+    </script>
+
+</body>
+</html>
